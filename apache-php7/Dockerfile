@@ -1,4 +1,4 @@
-FROM mogtofu33/docker-alpine-edge-base:latest
+FROM mogtofu33/alpine-base:edge
 
 MAINTAINER moimog33@gmail.com
 

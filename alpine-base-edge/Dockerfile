@@ -17,6 +17,7 @@ RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/reposit
 
 # With minimal apps.
 RUN apk add --update \
+    git \
     bash \
     shadow \
     curl \

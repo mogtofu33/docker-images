@@ -1,4 +1,4 @@
-FROM mogtofu33/docker-alpine-base:latest
+FROM mogtofu33/alpine-base:1.0
 
 MAINTAINER moimog33@gmail.com
 
@@ -20,9 +20,6 @@ COPY config/my.cnf /etc/mysql/my.cnf
 # Copy startup script
 COPY scripts/run.sh /scripts/run.sh
 RUN chmod +x /scripts/run.sh
-
-# Copy and extract Dump
-#ADD dump/dump.sql.tar.gz /tmp/
 
 EXPOSE 3306
 
