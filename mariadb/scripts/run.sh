@@ -5,6 +5,10 @@ if [ "$LOCAL_UID" != "" ]; then
   ./scripts/change_uid_gid.sh mysql:mysql $LOCAL_UID:$LOCAL_GID
 fi
 
+# Fix my.cnf permissions
+chown mysql:mysql /etc/mysql/my.cnf
+chmod 644 /etc/mysql/my.cnf
+
 if [ ! -d "/run/mysqld" ]; then
 	mkdir -p /run/mysqld
 	chown -R mysql:mysql /run/mysqld
