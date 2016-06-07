@@ -2,6 +2,7 @@ FROM mogtofu33/alpine-base:edge
 
 MAINTAINER moimog33@gmail.com
 
+# Set specific uid/gid to web server user to fix permissions issues.
 # ENV LOCAL_UID=1001 \
     # LOCAL_GID=1001
 
@@ -47,6 +48,11 @@ RUN curl -sS https://drupalconsole.com/installer -L -o drupal.phar && \
     mv drupal.phar /usr/local/bin/drupal && \
     chmod +x /usr/local/bin/drupal && \
     drupal init >/dev/null
+
+# Setup drush aliases.
+RUN mkdir -p /www/drush/ /etc/drush/
+COPY config/aliases.drushrc.php /www/drush/aliases.drushrc.php
+RUN ln -s /www/drush/aliases.drushrc.php /etc/drush/aliases.drushrc.php
 
 # Prepare php logs.
 RUN mkdir -p /var/log/php && \

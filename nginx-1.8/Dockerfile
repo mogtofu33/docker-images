@@ -17,11 +17,6 @@ COPY config/nginx.conf /etc/nginx/nginx.conf
 COPY scripts/run.sh /scripts/run.sh
 RUN chmod +x /scripts/run.sh
 
-# Setup drush aliases.
-RUN mkdir -p /www/drush/ /etc/drush/
-COPY config/aliases.drushrc.php /www/drush/aliases.drushrc.php
-RUN ln -s /www/drush/aliases.drushrc.php /etc/drush/aliases.drushrc.php
-
 EXPOSE 80
 
 VOLUME ["/www", "/var/log/nginx"]
