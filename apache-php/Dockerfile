@@ -48,9 +48,8 @@ RUN mkdir -p /www && \
     chown -R apache:apache /run/apache2
 
 # Setup drush aliases.
-RUN mkdir -p /www/drush/ /etc/drush/
-COPY config/aliases.drushrc.php /www/drush/aliases.drushrc.php
-RUN ln -s /www/drush/aliases.drushrc.php /etc/drush/aliases.drushrc.php
+RUN mkdir -p /etc/drush/
+COPY config/aliases.drushrc.php /etc/drush/aliases.drushrc.php
 
 # Prepare php and apache logs.
 RUN mkdir -p /var/log/apache2 && \
