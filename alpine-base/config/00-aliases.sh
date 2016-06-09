@@ -1,4 +1,6 @@
-# .bash_aliases
+# Specific and usefull bash aliases.
+
+## Bash ##
 
 # Interactive operation...
 alias t='tail -n200'
@@ -25,7 +27,8 @@ alias cd..='cd ..'
 alias ..='cd ..'
 alias ...='cd ../../../'
 alias ....='cd ../../../../'
-alias .....='cd ../../../../'
+alias .....='cd ../../../../../'
+alias .3='cd ../../../'
 alias .4='cd ../../../../'
 alias .5='cd ../../../../..'
 
@@ -46,7 +49,6 @@ alias header='curl -I'
 alias headerc='curl -I --compress'
 
 ## set some other defaults ##
-alias df='df -H'
 alias du='du -ch'
 
 # Show text file without comment (#) lines
@@ -54,16 +56,6 @@ alias nocomm='grep -Ev '\''^(#|$)'\'''
 
 # Grabs the disk usage in the current directory
 alias usage='du -ch 2> /dev/null |tail -1'
-# list folders by size in current directory
-alias usaged="du -h --max-depth=1 | sort -rh"
-# Gets the total disk usage on your machine
-alias totalusage='df -hl --total | grep total'
-# Shows the individual partition usages without the temporary memory values
-alias partusage='df -hlT --exclude-type=tmpfs --exclude-type=devtmpfs'
-# Gives you what is using the most space. Both directories and files. Varies on
-# current directory
-alias most='du -hsx * | sort -rh | head -10'
-alias diskspace="du -S | sort -n -r |more"
 
 # file tree
 alias tree="find . -print | sed -e 's;[^/]*/;|____;g;s;____|; |;g'"
@@ -99,25 +91,21 @@ alias up='drush pm-update'
 alias upc='drush pm-updatecode'
 alias updb='drush updatedb'
 alias q='drush sql-query'
+alias lup='drush locale-check && drush locale-update'
 
+# Clean
 alias wda='drush -y wd-del all'
 alias ifa='drush image-flush --all -y'
-alias lup='drush locale-check && drush locale-update'
+
+# Features
 alias dfd='drush features-diff'
 alias dfr='drush features-revert'
 alias dfr='drush features-revert all'
 alias dfu='drush features-update'
+
+# Watchdog logs
 alias dws='drush ws --tail --count=5'
+
+# Find information on drush cmd
 alias drs='drush | egrep'
-
-## Functions ##
-
-# cd + l
-cdl() { cd"$@"; ls -al; }
-
-# mkdir + cd
-mcd () { mkdir -p $1; cd $1; }
-
-# backup
-bu() { cp "$1" "$1".backup-`date +%d-%m-%Y`; }
 

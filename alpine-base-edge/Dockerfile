@@ -30,7 +30,8 @@ RUN cp /usr/share/zoneinfo/${TIMEZONE} /etc/localtime && \
 
 # Copy config.
 COPY config/bashrc /root/.bashrc
-COPY config/bash_aliases /root/.bash_aliases
+COPY config/custom_ps1.sh /etc/profile.d/custom_ps1.sh
+COPY config/00-aliases.sh /etc/profile.d/00-aliases.sh
 
 # Usefull bash alias for docker exec.
 RUN ln -s /bin/bash /bash
