@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "[i] Set new uid/gid..."
+echo "[i] Fix uid/gid started..."
 
 # Get parameters.
 USER_TO_CHANGE=(${1//:/ })
@@ -28,37 +28,39 @@ else
   OLD_GID=`getent group $OLD_GROUP | cut -d: -f3`
 fi
 
-echo "[i] Update user $OLD_UID:$OLD_GID..."
-
 # Check if uid/gid does not already exist.
 UIDEXISTS=$(cat /etc/passwd | grep -e "[^:]*:[^:]*:$NEW_UID" | wc -l)
 if [ "$UIDEXISTS" -ne 0 ] && [ "$OLD_UID" != "$NEW_UID" ]; then
-  echo "[i] UID $NEW_UID already exists with an other user, skip fix."
-  exit 0
+  echo "[i] UID $NEW_UID already exists with an other user, skip usermod."
+else
+  # Set new uid.
+  if [ "$OLD_UID" != "$NEW_UID" ]; then
+    usermod -u ${NEW_UID} ${OLD_USER}
+    echo "[i] User updated $OLD_UID > $NEW_UID"
+  else
+    echo "[i] User uid match."
+  fi
 fi
+
 GIDEXISTS=$(cat /etc/group | grep -e "[^:]*:[^:]*:$NEW_GID" | wc -l)
 if [ "$GIDEXISTS" -ne 0 ] && [ "$OLD_GID" != "$NEW_GID" ]; then
-  echo "[i] GID $NEW_GID already exists with an other group, skip fix."
-  exit 0
-fi
-
-# Set new uid.
-if [ "$OLD_UID" != "$NEW_UID" ]; then
-  usermod -u ${NEW_UID} ${OLD_USER}
+  echo "[i] GID $NEW_GID already exists with an other group, skip groupmod."
 else
-  echo "[i] No UID change."
-fi
-
-# Set new gid.
-if [ "$OLD_GID" != "$NEW_GID" ]; then
-  groupmod -g ${NEW_GID} ${OLD_GROUP}
-  usermod -g ${NEW_GID} ${OLD_USER} 2>/dev/null
-else
-  echo "[i] No GID change."
+  # Set new gid.
+  if [ "$OLD_GID" != "$NEW_GID" ]; then
+    groupmod -g ${NEW_GID} ${OLD_GROUP}
+    usermod -g ${NEW_GID} ${OLD_USER} 2>/dev/null
+    echo "[i] Group updated $OLD_GID > $NEW_GID"
+  else
+    echo "[i] Group gid match."
+  fi
 fi
 
 # Change folders uid/gid.
-echo "[i] Update folders from $OLD_UID:$OLD_GID to $NEW_UID:$NEW_GID..."
-find / \( -name proc -o -name dev -o -name sys \) -prune -o \( -user ${OLD_UID} -exec chown -Rfh ${NEW_UID}:${NEW_GID} {} \; \)
+if [ "$OLD_UID" != "$NEW_UID" ] || [ "$OLD_GID" != "$NEW_GID" ]; then
+  echo "[i] Update folders $OLD_UID:$OLD_GID > $NEW_UID:$NEW_GID..."
+  find / \( -name proc -o -name dev -o -name sys \) -prune -o \( -user ${OLD_UID} -exec chown -Rfh ${NEW_UID}:${NEW_GID} {} \; \)
+else
+  echo "[i] No folders update needed."
+fi
 echo "[i] Update finished."
-
