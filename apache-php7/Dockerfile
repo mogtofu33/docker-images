@@ -30,7 +30,7 @@ RUN ln -s /usr/lib/php7 /usr/lib/php
 # Composer last version.
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 RUN echo "PATH=$PATH:~/.composer/vendor/bin" >> /root/.bashrc
-RUN /usr/bin/composer global require "hirak/prestissimo:^0.3"
+RUN /usr/local/bin/composer global require "hirak/prestissimo:^0.3"
 
 # Prepare Web root and Apache.
 RUN mkdir -p /www && \
