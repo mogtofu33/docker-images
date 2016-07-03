@@ -30,18 +30,7 @@ RUN ln -s /usr/lib/php7 /usr/lib/php
 # Composer last version.
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 RUN echo "PATH=$PATH:~/.composer/vendor/bin" >> /root/.bashrc
-
-# Drush last version.
-RUN curl -sS http://files.drush.org/drush.phar -L -o drush.phar && \
-    mv drush.phar /usr/local/bin/drush && \
-    chmod +x /usr/local/bin/drush
-RUN drush init -y >/dev/null
-
-# Drupal console last version.
-RUN curl -sS https://drupalconsole.com/installer -L -o drupal.phar && \
-    mv drupal.phar /usr/local/bin/drupal && \
-    chmod +x /usr/local/bin/drupal
-RUN drupal init >/dev/null
+RUN /usr/bin/composer global require "hirak/prestissimo:^0.3"
 
 # Prepare Web root and Apache.
 RUN mkdir -p /www && \
