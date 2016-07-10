@@ -27,6 +27,7 @@ RUN sed -i "s/extension=xdebug.so/zend_extension=xdebug.so/" /etc/php/conf.d/xde
 # Composer last version.
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 RUN echo "PATH=$PATH:~/.composer/vendor/bin" >> /root/.bashrc
+RUN /usr/local/bin/composer global require "hirak/prestissimo:^0.3"
 
 # Drush last version.
 RUN curl -sS http://files.drush.org/drush.phar -L -o drush.phar && \

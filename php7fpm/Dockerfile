@@ -49,6 +49,10 @@ RUN curl -sS https://drupalconsole.com/installer -L -o drupal.phar && \
     chmod +x /usr/local/bin/drupal && \
     drupal init >/dev/null
 
+# Setup drush aliases.
+RUN mkdir -p /etc/drush/
+COPY config/aliases.drushrc.php /etc/drush/aliases.drushrc.php
+
 # Prepare php logs.
 RUN mkdir -p /var/log/php && \
     touch /var/log/php/php-error.log && \

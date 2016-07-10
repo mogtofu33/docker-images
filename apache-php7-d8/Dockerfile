@@ -32,18 +32,6 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 RUN echo "PATH=$PATH:~/.composer/vendor/bin" >> /root/.bashrc
 RUN /usr/local/bin/composer global require "hirak/prestissimo:^0.3"
 
-# Drush last version.
-RUN curl -sS http://files.drush.org/drush.phar -L -o drush.phar && \
-    mv drush.phar /usr/local/bin/drush && \
-    chmod +x /usr/local/bin/drush
-RUN drush init -y >/dev/null
-
-# Drupal console last version.
-RUN curl -sS https://drupalconsole.com/installer -L -o drupal.phar && \
-    mv drupal.phar /usr/local/bin/drupal && \
-    chmod +x /usr/local/bin/drupal
-RUN drupal init >/dev/null
-
 # Prepare Web root and Apache.
 RUN mkdir -p /www && \
     mkdir -p /etc/apache2/vhost && \
@@ -53,7 +41,6 @@ RUN mkdir -p /www && \
 
 # Setup drush aliases.
 RUN mkdir -p /etc/drush/
-COPY config/aliases.drushrc.php /etc/drush/aliases.drushrc.php
 
 # Prepare php and apache logs.
 RUN mkdir -p /var/log/apache2  && \
