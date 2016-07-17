@@ -3,8 +3,13 @@ FROM mogtofu33/alpine-base:edge
 MAINTAINER moimog33@gmail.com
 
 # Set specific uid/gid to web server user to fix permissions issues.
-# ENV LOCAL_UID=1000 \
-    # LOCAL_GID=1000
+#ENV LOCAL_UID=1000 \
+#    LOCAL_GID=1000
+
+# Flag to install specific programs.
+ENV SETUP_COMPOSER=true
+ENV SETUP_DRUSH=true
+ENV SETUP_CONSOLE=true
 
 # Install Php extensions, Drush need mysql/postgresql-client and rsync.
 RUN apk add --update \

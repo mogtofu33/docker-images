@@ -6,6 +6,11 @@ MAINTAINER moimog33@gmail.com
 #ENV LOCAL_UID=1000 \
 #    LOCAL_GID=1000
 
+# Flag to install specific programs.
+ENV SETUP_COMPOSER=true
+ENV SETUP_DRUSH=true
+ENV SETUP_CONSOLE=true
+
 # Install Php extensions, Drush need mysql/postgresql-client and rsync.
 RUN apk add --update \
     php-cli php-fpm \
