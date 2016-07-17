@@ -2,11 +2,11 @@
 
 # Set uid/gid to fix data permissions.
 if [ "$LOCAL_UID" != "" ]; then
-  /scripts/change_uid_gid.sh phpfpm:phpfpm $LOCAL_UID:$LOCAL_GID
+  /scripts/change_uid_gid.sh apache:www-data $LOCAL_UID:$LOCAL_GID
 fi
 
 # Set-up composer
-if [[ $SETUP_COMPOSER ]]; then
+if [[ $SETUP_COMPOSER == true ]]; then
   echo "[i] Set-up Composer..."
   curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
   echo "PATH=$PATH:~/.composer/vendor/bin" >> /root/.bashrc
@@ -15,7 +15,7 @@ if [[ $SETUP_COMPOSER ]]; then
 fi
 
 # Set-up Drush
-if [[ $SETUP_DRUSH ]]; then
+if [[ $SETUP_DRUSH == true ]]; then
   echo "[i] Set-up Drush..."
   curl -sS http://files.drush.org/drush.phar -L -o drush.phar && \
     mv drush.phar /usr/local/bin/drush && \
@@ -24,7 +24,7 @@ if [[ $SETUP_DRUSH ]]; then
 fi
 
 # Set-up Drupal console
-if [[ $SETUP_CONSOLE ]]; then
+if [[ $SETUP_CONSOLE == true ]]; then
   echo "[i] Set-up Drupal console..."
   curl -sS https://drupalconsole.com/installer -L -o drupal.phar && \
     mv drupal.phar /usr/local/bin/drupal && \
@@ -32,6 +32,11 @@ if [[ $SETUP_CONSOLE ]]; then
   drupal init >/dev/null
 fi
 
-echo "[i] Starting Php-Fpm..."
+# Apache yelling about pid on container restart.
+rm -rf /run/apache2
+mkdir -p /run/apache2
+chown apache:www-data /run/apache2
+
+echo "[i] Starting Apache..."
 # Run apache httpd daemon.
-/usr/bin/php-fpm -F
+httpd -D FOREGROUND

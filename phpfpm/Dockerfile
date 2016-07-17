@@ -33,7 +33,7 @@ RUN useradd phpfpm && \
     usermod -G users phpfpm
 
 # Fix xdebug warning.
-RUN sed -i "s/extension=xdebug.so/zend_extension=xdebug.so/" /etc/php/conf.d/xdebug.ini
+#RUN sed -i "s/extension=xdebug.so/zend_extension=xdebug.so/" /etc/php/conf.d/xdebug.ini
 
 # Prepare php logs.
 RUN mkdir -p /var/log/php && \

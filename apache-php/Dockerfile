@@ -27,7 +27,7 @@ RUN apk add --update \
     rsync openssh openssl
 
 # Fix xdebug warning.
-RUN sed -i "s/extension=xdebug.so/zend_extension=xdebug.so/" /etc/php/conf.d/xdebug.ini
+#RUN sed -i "s/extension=xdebug.so/zend_extension=xdebug.so/" /etc/php/conf.d/xdebug.ini
 
 # Prepare Web root and Apache.
 RUN mkdir -p /www && \
