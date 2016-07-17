@@ -3,8 +3,11 @@ FROM mogtofu33/alpine-base:edge
 MAINTAINER moimog33@gmail.com
 
 # Set specific uid/gid to web server user to fix permissions issues.
-#ENV LOCAL_UID=1001 \
-#    LOCAL_GID=1001
+#ENV LOCAL_UID=1000 \
+#    LOCAL_GID=1000
+ENV SETUP_COMPOSER=false
+ENV SETUP_DRUSH=true
+ENV SETUP_CONSOLE=true
 
 # Install Php extensions, Apache and database client/rsync for Drush.
 RUN apk add --update \
@@ -18,31 +21,14 @@ RUN apk add --update \
     php7-memcached php7-opcache php7-xdebug \
     php7-redis php7-posix php7-session \
     php7-intl php7-gd php7-mbstring \
-    php7-apache2 apache2 \
+    php7-apache2 apache2 apache2-ssl \
     mysql-client postgresql-client \
-    rsync openssh
+    rsync openssh openssl
 
 # Fix Php links.
 RUN ln -s /usr/bin/php7 /usr/bin/php
 RUN ln -s /etc/php7 /etc/php
 RUN ln -s /usr/lib/php7 /usr/lib/php
-
-# Composer last version.
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-RUN echo "PATH=$PATH:~/.composer/vendor/bin" >> /root/.bashrc
-RUN /usr/local/bin/composer global require "hirak/prestissimo:^0.3"
-
-# Drush last version.
-RUN curl -sS http://files.drush.org/drush.phar -L -o drush.phar && \
-    mv drush.phar /usr/local/bin/drush && \
-    chmod +x /usr/local/bin/drush
-RUN drush init -y >/dev/null
-
-# Drupal console last version.
-RUN curl -sS https://drupalconsole.com/installer -L -o drupal.phar && \
-    mv drupal.phar /usr/local/bin/drupal && \
-    chmod +x /usr/local/bin/drupal
-RUN drupal init >/dev/null
 
 # Prepare Web root and Apache.
 RUN mkdir -p /www && \
@@ -51,13 +37,11 @@ RUN mkdir -p /www && \
     mkdir /run/apache2 && \
     chown -R apache:www-data /run/apache2
 
-# Setup drush aliases.
-RUN mkdir -p /etc/drush/
-COPY config/aliases.drushrc.php /etc/drush/aliases.drushrc.php
-
 # Prepare php and apache logs.
-RUN mkdir -p /var/log/apache2  && \
-    chown -R apache:www-data /var/log/apache2
+RUN mkdir -p /var/log/apache2 && \
+    mkdir -p /var/log/php7 && \
+    chown -R apache:www-data /var/log/apache2 && \
+    chown -R apache:www-data /var/log/php7
 
 # Clean.
 RUN rm -rf /var/cache/apk/*
