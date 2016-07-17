@@ -9,7 +9,8 @@ MAINTAINER moimog33@gmail.com
 # Variables
 ENV MYSQL_DATABASE=drupal \
     MYSQL_USER=drupal \
-    MYSQL_PASSWORD=drupal
+    MYSQL_PASSWORD=drupal \
+    MYSQL_ROOT_PASSWORD=root
 
 RUN apk --update add mysql mysql-client pwgen && \
     rm -rf /var/cache/apk/*
