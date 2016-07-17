@@ -3,8 +3,8 @@ FROM mogtofu33/alpine-base:edge
 MAINTAINER moimog33@gmail.com
 
 # Set specific uid/gid to web server user to fix permissions issues.
-# ENV LOCAL_UID=1001 \
-    # LOCAL_GID=1001
+# ENV LOCAL_UID=1000 \
+    # LOCAL_GID=1000
 
 # Install Php extensions, Drush need mysql/postgresql-client and rsync.
 RUN apk add --update \
@@ -19,7 +19,7 @@ RUN apk add --update \
     php7-redis php7-posix php7-session \
     php7-intl php7-gd php7-mbstring \
     mysql-client postgresql-client \
-    rsync openssh
+    rsync openssh openssl
 
 # Create specific Php-Fpm user.
 RUN useradd phpfpm && \
@@ -32,26 +32,6 @@ RUN ln -s /usr/bin/php7 /usr/bin/php && \
     ln -s /usr/sbin/php-fpm7 /usr/bin/php-fpm && \
     ln -s /etc/php7 /etc/php && \
     ln -s /usr/lib/php7 /usr/lib/php
-
-# Composer last version.
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer && \
-    echo "PATH=$PATH:~/.composer/vendor/bin" >> /root/.bashrc
-
-# Drush last version.
-RUN curl -sS http://files.drush.org/drush.phar -L -o drush.phar && \
-    mv drush.phar /usr/local/bin/drush && \
-    chmod +x /usr/local/bin/drush && \
-    drush init -y >/dev/null
-
-# Drupal console last version.
-RUN curl -sS https://drupalconsole.com/installer -L -o drupal.phar && \
-    mv drupal.phar /usr/local/bin/drupal && \
-    chmod +x /usr/local/bin/drupal && \
-    drupal init >/dev/null
-
-# Setup drush aliases.
-RUN mkdir -p /etc/drush/
-COPY config/aliases.drushrc.php /etc/drush/aliases.drushrc.php
 
 # Prepare php logs.
 RUN mkdir -p /var/log/php && \

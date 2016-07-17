@@ -5,7 +5,9 @@ MAINTAINER moimog33@gmail.com
 # Set specific uid/gid to web server user to fix permissions issues.
 #ENV LOCAL_UID=1000 \
 #    LOCAL_GID=1000
-ENV SETUP_COMPOSER=false
+
+# Flag to install specific programs.
+ENV SETUP_COMPOSER=true
 ENV SETUP_DRUSH=true
 ENV SETUP_CONSOLE=true
 
