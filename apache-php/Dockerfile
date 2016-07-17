@@ -13,16 +13,16 @@ ENV SETUP_CONSOLE=true
 
 # Install Php extensions, Apache and database client/rsync for Drush.
 RUN apk add --update \
-    php-cli php-fpm \
-    php-json php-zlib php-xml php-phar php-openssl php-sockets \
-    php-pdo php-pdo_mysql php-mysql php-mysqli \
-    php-pdo_pgsql php-pgsql \
-    php-gd php-iconv php-mcrypt \
-    php-curl php-ctype php-intl php-bcmath \
-    php-dom php-xmlreader php-ldap \
-    php-memcached php-opcache php-apcu \
-    php-xdebug php-redis php-posix \
-    apache2 php-apache2 apache2-ssl \
+    php5-cli php5-fpm \
+    php5-json php5-zlib php5-xml php5-phar php5-openssl php5-sockets \
+    php5-pdo php5-pdo_mysql php5-mysql php5-mysqli \
+    php5-pdo_pgsql php5-pgsql \
+    php5-gd php5-iconv php5-mcrypt \
+    php5-curl php5-ctype php5-intl php5-bcmath \
+    php5-dom php5-xmlreader php5-ldap \
+    php5-memcached php5-opcache php5-apcu \
+    php5-xdebug php5-redis php5-posix \
+    apache2 php5-apache2 apache2-ssl \
     mysql-client postgresql-client \
     rsync openssh openssl
 
