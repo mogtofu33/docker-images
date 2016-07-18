@@ -32,11 +32,6 @@ if [[ $SETUP_CONSOLE == true ]]; then
   drupal init >/dev/null
 fi
 
-# Apache yelling about pid on container restart.
-rm -rf /run/apache2
-mkdir -p /run/apache2
-chown apache:www-data /run/apache2
-
-echo "[i] Starting Apache..."
+echo "[i] Starting Php-Fpm..."
 # Run apache httpd daemon.
-httpd -D FOREGROUND
+/usr/bin/php-fpm -F
