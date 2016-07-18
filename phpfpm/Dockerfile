@@ -7,7 +7,7 @@ MAINTAINER moimog33@gmail.com
 #    LOCAL_GID=1000
 
 # Flag to install specific programs.
-ENV SETUP_COMPOSER=true
+ENV SETUP_COMPOSER=false
 ENV SETUP_DRUSH=true
 ENV SETUP_CONSOLE=true
 
@@ -30,22 +30,25 @@ RUN apk add --update \
 RUN useradd phpfpm && \
     groupadd phpfpm && \
     usermod -g phpfpm phpfpm && \
-    usermod -G users phpfpm
+    usermod -G phpfpm phpfpm
 
-# Fix xdebug warning.
-#RUN sed -i "s/extension=xdebug.so/zend_extension=xdebug.so/" /etc/php/conf.d/xdebug.ini
+# Fix Php links.
+RUN ln -s /etc/php5 /etc/php && \
+    rm -rf /usr/lib/php && \
+    ln -s /usr/lib/php5 /usr/lib/php
 
 # Prepare php logs.
 RUN mkdir -p /var/log/php && \
-    touch /var/log/php/php-error.log && \
-    touch /var/log/php/php-fpm.log
+    touch /var/log/php/phpfpm.error.log && \
+    touch /var/log/php/phpfpm.access.log && \
+    chown -R phpfpm:phpfpm /var/log/php
 
 # Clean.
 RUN rm -f /var/cache/apk/*
 
 # Config and run script.
-COPY config/php.ini /etc/php/php.ini
-COPY config/php-fpm.conf /etc/php/php-fpm.conf
+COPY config/php.ini /etc/php5/php.ini
+COPY config/php-fpm.conf /etc/php5/php-fpm.conf
 COPY scripts/run.sh /scripts/run.sh
 RUN chmod +x /scripts/run.sh
 

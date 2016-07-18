@@ -7,7 +7,7 @@ MAINTAINER moimog33@gmail.com
 #    LOCAL_GID=1000
 
 # Flag to install specific programs.
-ENV SETUP_COMPOSER=true
+ENV SETUP_COMPOSER=false
 ENV SETUP_DRUSH=true
 ENV SETUP_CONSOLE=true
 
@@ -40,8 +40,9 @@ RUN ln -s /usr/bin/php7 /usr/bin/php && \
 
 # Prepare php logs.
 RUN mkdir -p /var/log/php && \
-    touch /var/log/php/php-error.log && \
-    touch /var/log/php/php-fpm.log
+    touch /var/log/php/phpfpm.error.log && \
+    touch /var/log/php/phpfpm.access.log && \
+    chown -R phpfpm:phpfpm /var/log/php
 
 # Clean.
 RUN rm -f /var/cache/apk/*
