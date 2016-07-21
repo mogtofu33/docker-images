@@ -13,8 +13,10 @@ RUN apk add --update \
 
 # Prepare Web root and Apache.
 RUN mkdir -p /www && \
-    mkdir /run/apache2 && \
     chown -R apache:www-data /www && \
+    mkdir /etc/apache2/vhost && \
+    chown -R apache:apache /etc/apache2/vhost && \
+    mkdir /run/apache2 && \
     chown -R apache:www-data /run/apache2
 
 # Prepare php and apache logs.
@@ -26,6 +28,7 @@ RUN rm -rf /var/cache/apk/*
 
 # Set Apache config.
 COPY config/httpd.conf /etc/apache2/httpd.conf
+COPY config/vhost.conf /etc/apache2/vhost/vhost.conf
 COPY config/conf.d/proxy.conf /etc/apache2/conf.d/proxy.conf
 
 # Set apache script
@@ -35,6 +38,6 @@ RUN chmod +x /scripts/run.sh
 EXPOSE 80
 EXPOSE 443
 
-VOLUME ["/www", "/var/log/apache2"]
+VOLUME ["/www", "/etc/apache2/vhost", /var/log/apache2"]
 
 ENTRYPOINT ["/bin/bash" , "/scripts/run.sh"]

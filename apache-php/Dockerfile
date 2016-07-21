@@ -31,6 +31,7 @@ RUN apk add --update \
 
 # Prepare Web root and Apache.
 RUN mkdir -p /www && \
+    chown -R apache:www-data /www && \
     mkdir /etc/apache2/vhost && \
     chown -R apache:apache /etc/apache2/vhost && \
     mkdir /run/apache2 && \
@@ -47,6 +48,7 @@ RUN rm -rf /var/cache/apk/*
 
 # Set Apache and Php config.
 COPY config/httpd.conf /etc/apache2/httpd.conf
+COPY config/vhost.conf /etc/apache2/vhost/vhost.conf
 COPY config/php.ini /etc/php/php.ini
 
 # Set apache script
@@ -54,7 +56,8 @@ COPY scripts/run.sh /scripts/run.sh
 RUN chmod +x /scripts/run.sh
 
 EXPOSE 80
+EXPOSE 443
 
-VOLUME ["/www", "/var/log/apache2"]
+VOLUME ["/www", "/etc/apache2/vhost", /var/log/apache2"]
 
 ENTRYPOINT ["/bin/bash" , "/scripts/run.sh"]
