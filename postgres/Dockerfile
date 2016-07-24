@@ -2,8 +2,9 @@ FROM mogtofu33/alpine-base:1.0
 
 MAINTAINER moimog33@gmail.com
 
-# ENV LOCAL_UID=1001 \
-    # LOCAL_GID=1001
+# Set specific uid/gid to web server user to fix permissions issues.
+#ENV LOCAL_UID= \
+#    LOCAL_GID=
 
 # Variables for PostgreSQL.
 ENV PGDATA=/var/lib/postgresql/data \

@@ -3,8 +3,8 @@ FROM mogtofu33/alpine-base:edge
 MAINTAINER moimog33@gmail.com
 
 # Set specific uid/gid to web server user to fix permissions issues.
-#ENV LOCAL_UID=1001 \
-#    LOCAL_GID=1001
+#ENV LOCAL_UID= \
+#    LOCAL_GID=
 
 # Install Nginx
 RUN apk add --update nginx
@@ -18,6 +18,7 @@ COPY scripts/run.sh /scripts/run.sh
 RUN chmod +x /scripts/run.sh
 
 EXPOSE 80
+EXPOSE 443
 
 VOLUME ["/www", "/var/log/nginx"]
 
