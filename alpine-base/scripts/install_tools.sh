@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Set-up composer
-if [[ -n "$SETUP_COMPOSER" ]]; then
+if [[ $SETUP_COMPOSER == 1 ]]; then
   echo "[i] Set-up Composer..."
   curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
   echo "PATH=$PATH:~/.composer/vendor/bin" >> $HOME/.bashrc
@@ -10,7 +10,7 @@ if [[ -n "$SETUP_COMPOSER" ]]; then
 fi
 
 # Set-up Drush
-if [[ -n "$SETUP_DRUSH" ]]; then
+if [[ $SETUP_DRUSH == 1 ]]; then
   echo "[i] Set-up Drush..."
   curl -sS http://files.drush.org/drush.phar -L -o drush.phar && \
   mv drush.phar /usr/local/bin/drush && \
@@ -19,7 +19,7 @@ if [[ -n "$SETUP_DRUSH" ]]; then
 fi
 
 # Set-up Drupal console
-if [[ -n "$SETUP_CONSOLE" ]]; then
+if [[ $SETUP_CONSOLE == 1 ]]; then
   echo "[i] Set-up Drupal console..."
   curl -sS https://drupalconsole.com/installer -L -o drupal.phar && \
   mv drupal.phar /usr/local/bin/drupal && \
