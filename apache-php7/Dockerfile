@@ -7,9 +7,9 @@ MAINTAINER moimog33@gmail.com
 #    LOCAL_GID=
 
 # Flag to install specific programs.
-ENV SETUP_COMPOSER=false
-ENV SETUP_DRUSH=true
-ENV SETUP_CONSOLE=true
+ENV SETUP_COMPOSER=0
+ENV SETUP_DRUSH=1
+ENV SETUP_CONSOLE=1
 
 # Install Php extensions, Apache and database client/rsync for Drush.
 RUN apk add --update \

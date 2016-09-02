@@ -47,3 +47,5 @@ RUN mkdir /scripts && \
     chmod -R 755 /scripts
 COPY ./scripts/change_uid_gid.sh /scripts/change_uid_gid.sh
 RUN chmod +x /scripts/change_uid_gid.sh
+COPY ./scripts/install_tools.sh /scripts/install_tools.sh
+RUN chmod +x /scripts/install_tools.sh
