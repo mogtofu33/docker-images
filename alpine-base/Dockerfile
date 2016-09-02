@@ -19,7 +19,6 @@ RUN echo "http://dl-4.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositor
 RUN apk add --update \
     git \
     bash \
-    shadow \
     curl \
     wget \
     tzdata
