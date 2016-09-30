@@ -1,4 +1,4 @@
-FROM mogtofu33/alpine-base:1.0
+FROM mogtofu33/alpine-base:edge
 
 MAINTAINER moimog33@gmail.com
 
@@ -27,4 +27,3 @@ EXPOSE 3306
 VOLUME ["/var/lib/mysql", "/var/log/mysql"]
 
 ENTRYPOINT ["/bin/bash" , "/scripts/run.sh"]
-

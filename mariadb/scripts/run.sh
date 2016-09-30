@@ -9,6 +9,9 @@ fi
 chown mysql:mysql /etc/mysql/my.cnf
 chmod 644 /etc/mysql/my.cnf
 
+# Fix database owner.
+chown -R mysql:mysql /var/lib/mysql
+
 if [ ! -d "/run/mysqld" ]; then
   mkdir -p /run/mysqld
   chown -R mysql:mysql /run/mysqld

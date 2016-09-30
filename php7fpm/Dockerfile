@@ -21,7 +21,7 @@ RUN apk add --update \
     php7-iconv php7-mcrypt \
     php7-curl php7-ctype  php7-bcmath \
     php7-dom php7-xmlreader php7-ldap \
-    php7-opcache php7-xdebug \
+    php7-memcached php7-opcache php7-xdebug \
     php7-redis php7-posix php7-session \
     php7-intl php7-gd php7-mbstring \
     mysql-client postgresql-client \

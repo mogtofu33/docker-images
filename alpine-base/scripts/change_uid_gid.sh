@@ -20,7 +20,7 @@ else
 fi
 
 # Check if group exist.
-GROUPEXISTS=$(cat /etc/group | grep -e "${OLD_GROUP}" | wc -l)
+GROUPEXISTS=$(cat /etc/group | grep -e "${OLD_GROUP}:" | wc -l)
 if [ "$GROUPEXISTS" -ne 1 ]; then
   echo "[i] Group '$OLD_GROUP' not found in /etc/group"
   exit 0
