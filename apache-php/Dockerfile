@@ -22,7 +22,7 @@ RUN apk add --update \
     php5-dom php5-xmlreader php5-ldap \
     php5-memcached php5-opcache php5-apcu \
     php5-xdebug php5-redis php5-posix \
-    apache2 php5-apache2 apache2-ssl \
+    apache2 php5-apache2 apache2-ssl apache2-ldap apache-mod-auth-kerb \
     mysql-client postgresql-client \
     rsync openssh openssl
 
