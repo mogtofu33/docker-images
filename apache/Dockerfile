@@ -8,7 +8,7 @@ MAINTAINER moimog33@gmail.com
 
 # Install Php extensions, Apache and database client/rsync for Drush.
 RUN apk add --update \
-    apache2 apache2-proxy apache2-ssl \
+    apache2 apache2-proxy apache2-ssl apache2-ldap apache-mod-auth-kerb \
     rsync openssh openssl
 
 # Prepare Web root and Apache.
