@@ -4,8 +4,6 @@
 
 Based on my basic Alpine Edge image: https://github.com/Mogtofu33/docker-alpine-edge-base
 
-Very light: 137MB
-
 Include:
 - Composer
 - Drush

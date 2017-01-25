@@ -3,12 +3,12 @@ FROM mogtofu33/alpine-base:edge
 MAINTAINER moimog33@gmail.com
 
 # Set specific uid/gid to web server user to fix permissions issues.
-#ENV LOCAL_UID= \
-#    LOCAL_GID=
+#ENV LOCAL_UID=
+#ENV LOCAL_GID=
 
 # Install Php extensions, Apache and database client/rsync for Drush.
 RUN apk add --update \
-    apache2 apache2-proxy apache2-ssl apache2-ldap apache-mod-auth-kerb \
+    apache2 apache2-proxy apache2-ssl apache2-ldap \
     rsync openssh openssl
 
 # Prepare Web root and Apache.

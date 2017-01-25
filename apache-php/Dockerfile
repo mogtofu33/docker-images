@@ -3,11 +3,11 @@ FROM mogtofu33/alpine-base:edge
 MAINTAINER moimog33@gmail.com
 
 # Set specific uid/gid to web server user to fix permissions issues.
-#ENV LOCAL_UID= \
-#    LOCAL_GID=
+#ENV LOCAL_UID=
+#ENV LOCAL_GID=
 
 # Flag to install specific programs.
-ENV SETUP_COMPOSER=0
+ENV SETUP_COMPOSER=1
 ENV SETUP_DRUSH=1
 ENV SETUP_CONSOLE=1
 
@@ -22,7 +22,7 @@ RUN apk add --update \
     php5-dom php5-xmlreader php5-ldap \
     php5-memcached php5-opcache php5-apcu \
     php5-xdebug php5-redis php5-posix php5-exif \
-    apache2 php5-apache2 apache2-proxy apache2-ssl apache2-ldap apache-mod-auth-kerb \
+    apache2 php5-apache2 apache2-proxy apache2-ssl apache2-ldap \
     mysql-client postgresql-client \
     rsync openssh openssl
 
@@ -49,6 +49,7 @@ RUN rm -rf /var/cache/apk/*
 # Set Apache and Php config.
 COPY config/httpd.conf /etc/apache2/httpd.conf
 COPY config/vhost.conf /etc/apache2/vhost/vhost.conf
+COPY config/conf.d/proxy.conf /etc/apache2/conf.d/proxy.conf
 COPY config/php.ini /etc/php/php.ini
 
 # Set apache script

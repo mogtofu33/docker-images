@@ -4,7 +4,7 @@ MAINTAINER moimog33@gmail.com
 
 ENV SOLR_USER root
 ENV SOLR_UID 8983
-ENV SOLR_VERSION  5.5.0
+ENV SOLR_VERSION 5.5.3
 
 # Install JRE needed for solr.
 RUN apk --update add openjdk7-jre
