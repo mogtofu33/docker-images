@@ -16,3 +16,11 @@ chown apache:www-data /run/apache2
 echo "[i] Starting Apache..."
 # Run apache httpd daemon.
 httpd -D FOREGROUND
+
+# Test if apache is running, if not send error.
+if ! pgrep -x "gedit" > /dev/null
+then
+  echo "[i] Apache stopped..."
+  tail -n 5 /var/log/apache2/error.log
+  tail -n 5 /var/log/apache2/ssl_error.log
+fi
