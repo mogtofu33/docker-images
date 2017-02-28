@@ -22,7 +22,8 @@ RUN apk add --update \
     php5-dom php5-xmlreader php5-ldap \
     php5-memcached php5-opcache php5-apcu \
     php5-xdebug php5-redis php5-posix php5-exif \
-    apache2 php5-apache2 apache2-proxy apache2-ssl apache2-ldap \
+    php5-apache2 apache2 apache2-ssl apache2-utils \
+    apache2-ldap apache2-proxy \
     mysql-client postgresql-client \
     rsync openssh openssl
 
@@ -39,9 +40,8 @@ RUN mkdir -p /www && \
 
 # Prepare php and apache logs.
 RUN mkdir -p /var/log/apache2 && \
-    mkdir -p /var/log/php && \
-    chown -R apache:www-data /var/log/apache2 && \
-    chown -R apache:www-data /var/log/php
+    touch /var/log/apache2/php-error.log && \
+    chown -R apache:www-data /var/log/apache2
 
 # Clean.
 RUN rm -rf /var/cache/apk/*
@@ -50,6 +50,7 @@ RUN rm -rf /var/cache/apk/*
 COPY config/httpd.conf /etc/apache2/httpd.conf
 COPY config/vhost.conf /etc/apache2/vhost/vhost.conf
 COPY config/conf.d/proxy.conf /etc/apache2/conf.d/proxy.conf
+COPY config/conf.d/ssl.conf /etc/apache2/conf.d/ssl.conf
 COPY config/php.ini /etc/php/php.ini
 
 # Set apache script
