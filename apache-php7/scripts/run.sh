@@ -18,7 +18,7 @@ echo "[i] Starting Apache..."
 httpd -D FOREGROUND
 
 # Test if apache is running, if not send error.
-if ! pgrep -x "gedit" > /dev/null
+if ! pgrep -x "httpd" > /dev/null
 then
   echo "[i] Apache stopped..."
   tail -n 5 /var/log/apache2/error.log

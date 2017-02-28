@@ -47,9 +47,8 @@ RUN mkdir -p /www && \
 
 # Prepare php and apache logs.
 RUN mkdir -p /var/log/apache2 && \
-    mkdir -p /var/log/php7 && \
-    chown -R apache:www-data /var/log/apache2 && \
-    chown -R apache:www-data /var/log/php7
+    touch /var/log/apache2/php-error.log && \
+    chown -R apache:www-data /var/log/apache2
 
 # Clean.
 RUN rm -rf /var/cache/apk/*
