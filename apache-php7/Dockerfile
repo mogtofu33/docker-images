@@ -33,8 +33,7 @@ RUN apk add --update \
     rsync openssh openssl
 
 # Fix Php links.
-RUN ln -s /usr/bin/php7 /usr/bin/php && \
-    ln -s /etc/php7 /etc/php && \
+RUN ln -s /etc/php7 /etc/php && \
     ln -s /usr/lib/php7 /usr/lib/php
 
 # Prepare Web root and Apache.
