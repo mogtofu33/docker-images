@@ -19,21 +19,19 @@ RUN apk add --update \
     php7-pdo_pgsql php7-pgsql php7-sqlite3 \
     php7-iconv php7-mcrypt php7-intl php7-mbstring php7-pcntl \
     php7-ctype  php7-bcmath php7-dom php7-xsl php7-xml php7-xmlrpc php7-xmlreader \
-    php7-soap php7-ldap \
-    php7-opcache php7-xdebug php7-apcu php7-phpdbg \
+    php7-soap php7-ldap php7-opcache php7-xdebug php7-apcu php7-phpdbg \
     php7-posix php7-session php7-curl php7-gd php7-exif \
     php7-zip php7-bz2 php7-sysvmsg php7-sysvsem php7-sysvshm \
     php7-ftp php7-gmp php7-imap php7-calendar \
-    php7-tidy php7-wddx php7-enchant php7-embed php7-litespeed \
-    php7-pear \
+    php7-tidy php7-wddx php7-enchant php7-embed php7-litespeed php7-pear \
     php7-apache2 apache2 apache2-ssl apache2-utils \
     apache2-ldap apache2-proxy \
     mysql-client postgresql-client \
     rsync openssh openssl
 
 # Not available on stable repo.
-RUN apk --update add --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community/ \
-    php7-memcached php7-redis
+# RUN apk --update add --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community/ \
+    # php7-memcached php7-redis
 
 # Fix Php links.
 RUN ln -s /usr/bin/php7 /usr/bin/php && \
