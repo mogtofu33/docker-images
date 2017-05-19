@@ -20,17 +20,17 @@ RUN apt-get update && apt-get install -y libmemcached-dev zlib1g-dev \
     && docker-php-ext-enable memcached
 
 # Prepare Web root and Apache.
-RUN mkdir -p /www && \
-    chown -R apache:www-data /www && \
-    mkdir -p /etc/apache2/vhost && \
-    chown -R apache:www-data /etc/apache2/vhost && \
-    mkdir /run/apache2 && \
-    chown -R apache:www-data /run/apache2
+# RUN mkdir -p /www && \
+#     chown -R www-data:www-data /www && \
+#     mkdir -p /etc/apache2/vhost && \
+#     chown -R www-data:www-data /etc/apache2/vhost && \
+#     mkdir -p /run/apache2 && \
+#     chown -R www-data:www-data /run/apache2
 
 # Prepare php and apache logs.
-RUN mkdir -p /var/log/apache2 && \
-    touch /var/log/apache2/php-error.log && \
-    chown -R apache:www-data /var/log/apache2
+# RUN mkdir -p /var/log/apache2 && \
+#     touch /var/log/apache2/php-error.log && \
+#     chown -R www-data:www-data /var/log/apache2
 
 # Set Apache and Php config.
 # COPY config/httpd.conf /etc/apache2/httpd.conf
@@ -51,6 +51,8 @@ COPY config/aliases.drushrc.php /etc/drush/aliases.drushrc.php
 EXPOSE 80
 EXPOSE 443
 
-VOLUME ["/www", "/etc/apache2/vhost", "/var/log/apache2"]
+VOLUME ["/www"]
+
+# VOLUME ["/www", "/etc/apache2/vhost", "/var/log/apache2"]
 
 # ENTRYPOINT ["/bin/bash" , "/scripts/run.sh"]
