@@ -31,18 +31,16 @@ RUN cp /usr/share/zoneinfo/${TIMEZONE} /etc/localtime && \
 COPY config/bashrc /root/.bashrc
 
 # Usefull bash alias for docker exec.
-RUN ln -s /bin/bash /bash
-RUN ln -s /bin/sh /sh
+RUN ln -s /bin/bash /bash && \
+    ln -s /bin/sh /sh
 
 # Cleanup.
 RUN apk del tzdata && \
     rm -rf /var/cache/apk/*
 
-# Prepare www folder.
-RUN mkdir -p /www
-
-# Prepare scripts folde and set our script.
-RUN mkdir /scripts && \
+# Prepare folders and set our script.
+RUN mkdir -p /www && \
+    mkdir /scripts && \
     chmod -R 755 /scripts
 COPY ./scripts/change_uid_gid.sh /scripts/change_uid_gid.sh
 RUN chmod +x /scripts/change_uid_gid.sh
