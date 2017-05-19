@@ -60,6 +60,6 @@ RUN chmod +x /scripts/run.sh
 EXPOSE 80
 EXPOSE 443
 
-VOLUME ["/www", "/etc/apache2/vhost", /var/log/apache2"]
+VOLUME ["/www", "/etc/apache2/vhost", "/var/log/apache2"]
 
 ENTRYPOINT ["/bin/bash" , "/scripts/run.sh"]
