@@ -1,4 +1,4 @@
-FROM mogtofu33/alpine-base:edge
+FROM mogtofu33/alpine-base:latest
 
 MAINTAINER moimog33@gmail.com
 
@@ -7,9 +7,9 @@ MAINTAINER moimog33@gmail.com
 #ENV LOCAL_GID=
 
 # Flag to install specific programs.
-ENV SETUP_COMPOSER=0
-ENV SETUP_DRUSH=0
-ENV SETUP_CONSOLE=0
+ENV SETUP_COMPOSER=0 \
+    SETUP_DRUSH=0 \
+    SETUP_CONSOLE=0
 
 # Install Php extensions, Apache and database client/rsync for Drush.
 RUN apk add --update \
@@ -46,13 +46,6 @@ RUN mkdir -p /var/log/apache2 && \
 
 # Clean.
 RUN rm -rf /var/cache/apk/*
-
-# Set Apache and Php config.
-COPY config/httpd.conf /etc/apache2/httpd.conf
-COPY config/vhost.conf /etc/apache2/vhost/vhost.conf
-COPY config/conf.d/proxy.conf /etc/apache2/conf.d/proxy.conf
-COPY config/conf.d/ssl.conf /etc/apache2/conf.d/ssl.conf
-COPY config/php.ini /etc/php/php.ini
 
 # Set apache script
 COPY scripts/run.sh /scripts/run.sh
