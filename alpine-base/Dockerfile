@@ -1,4 +1,4 @@
-FROM alpine:latest
+FROM alpine:3.5
 
 MAINTAINER moimog33@gmail.com
 
@@ -38,7 +38,7 @@ RUN ln -s /bin/bash /bash && \
 RUN apk del tzdata && \
     rm -rf /var/cache/apk/*
 
-# Prepare folders and set our script.
+# Prepare folders and set our scripts.
 RUN mkdir -p /www && \
     mkdir /scripts && \
     chmod -R 755 /scripts
