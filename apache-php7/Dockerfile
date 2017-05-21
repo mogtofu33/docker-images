@@ -29,9 +29,11 @@ RUN apk add --update \
     mysql-client postgresql-client \
     rsync openssh openssl
 
-# Not available on stable repo.
-# RUN apk --update add --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community/ \
-    # php7-memcached php7-redis
+# Not available on stable repo, we use a third party repo.
+ADD https://php.codecasts.rocks/php-alpine.rsa.pub /etc/apk/keys/php-alpine.rsa.pub
+RUN echo "http://php.codecasts.rocks/7.0" >> /etc/apk/repositories
+RUN apk add --update \
+    php7-memcached php7-libsodium php7-redis
 
 # Fix Php links.
 RUN ln -s /usr/bin/php7 /usr/bin/php && \
