@@ -7,9 +7,7 @@ MAINTAINER moimog33@gmail.com
 #ENV LOCAL_GID=
 
 # Flag to install specific programs out of image.
-ENV SETUP_COMPOSER=0 \
-    SETUP_DRUSH=0 \
-    SETUP_CONSOLE=0
+ENV SETUP_COMPOSER=0
 
 # Use third party repo to fix missing extensions.
 ADD https://php.codecasts.rocks/php-alpine.rsa.pub /etc/apk/keys/php-alpine.rsa.pub
@@ -40,12 +38,17 @@ RUN ln -s /usr/bin/php7 /usr/bin/php && \
     ln -s /usr/lib/php7 /usr/lib/php
 
 # Prepare Web root and Apache.
-RUN mkdir -p /www && \
+RUN chown -R apache:www-data /var/www && \
+    mkdir -p /www && \
     chown -R apache:www-data /www && \
     mkdir -p /etc/apache2/vhost && \
     chown -R apache:www-data /etc/apache2/vhost && \
     mkdir /run/apache2 && \
     chown -R apache:www-data /run/apache2
+
+# Copy root bashrc config for Apache user when running cmd.
+RUN cp /root/.bashrc /var/www/.bashrc && \
+    chown apache:www-data /var/www/.bashrc
 
 # Prepare php and apache logs.
 RUN mkdir -p /var/log/apache2 && \

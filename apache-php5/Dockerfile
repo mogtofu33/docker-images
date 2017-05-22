@@ -7,9 +7,7 @@ MAINTAINER moimog33@gmail.com
 #ENV LOCAL_GID=
 
 # Flag to install specific programs.
-ENV SETUP_COMPOSER=0 \
-    SETUP_DRUSH=0 \
-    SETUP_CONSOLE=0
+ENV SETUP_COMPOSER=0
 
 # Install Php extensions, Apache and database client/rsync for Drush.
 RUN apk add --update \
@@ -36,9 +34,9 @@ RUN chown -R apache:www-data /var/www && \
     mkdir -p /www && \
     chown -R apache:www-data /www && \
     mkdir /etc/apache2/vhost && \
-    chown -R apache:apache /etc/apache2/vhost && \
+    chown -R apache:www-data /etc/apache2/vhost && \
     mkdir /run/apache2 && \
-    chown -R apache:apache /run/apache2
+    chown -R apache:www-data /run/apache2
 
 # Prepare php and apache logs.
 RUN mkdir -p /var/log/apache2 && \

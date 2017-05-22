@@ -7,9 +7,11 @@ MAINTAINER moimog33@gmail.com
 #ENV LOCAL_GID=
 
 # Flag to install specific programs out of image.
-ENV SETUP_COMPOSER=0 \
-    SETUP_DRUSH=0 \
-    SETUP_CONSOLE=0
+ENV SETUP_COMPOSER=0
+
+# 7.0.16 is buggy, we use a third party repo toi get 7.0.19.
+ADD https://php.codecasts.rocks/php-alpine.rsa.pub /etc/apk/keys/php-alpine.rsa.pub
+RUN echo "http://php.codecasts.rocks/7.0" >> /etc/apk/repositories
 
 # Install Php extensions, Apache and database client/rsync for Drush.
 RUN apk add --update \
@@ -24,16 +26,11 @@ RUN apk add --update \
     php7-zip php7-bz2 php7-sysvmsg php7-sysvsem php7-sysvshm \
     php7-ftp php7-gmp php7-imap php7-calendar \
     php7-tidy php7-wddx php7-enchant php7-embed php7-litespeed php7-pear \
+    php7-memcached php7-libsodium php7-redis \
     php7-apache2 apache2 apache2-ssl apache2-utils \
     apache2-ldap apache2-proxy \
     mysql-client postgresql-client \
     rsync openssh openssl
-
-# Not available on stable repo, we use a third party repo.
-ADD https://php.codecasts.rocks/php-alpine.rsa.pub /etc/apk/keys/php-alpine.rsa.pub
-RUN echo "http://php.codecasts.rocks/7.0" >> /etc/apk/repositories
-RUN apk add --update \
-    php7-memcached php7-libsodium php7-redis
 
 # Fix Php links.
 RUN ln -s /usr/bin/php7 /usr/bin/php && \
@@ -48,6 +45,10 @@ RUN chown -R apache:www-data /var/www && \
     chown -R apache:www-data /etc/apache2/vhost && \
     mkdir /run/apache2 && \
     chown -R apache:www-data /run/apache2
+
+# Copy root bashrc config for Apache user when running cmd.
+RUN cp /root/.bashrc /var/www/.bashrc && \
+    chown apache:www-data /var/www/.bashrc
 
 # Prepare php and apache logs.
 RUN mkdir -p /var/log/apache2 && \
