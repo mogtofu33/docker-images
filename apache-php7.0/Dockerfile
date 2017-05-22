@@ -41,7 +41,8 @@ RUN ln -s /usr/bin/php7 /usr/bin/php && \
     ln -s /usr/lib/php7 /usr/lib/php
 
 # Prepare Web root and Apache.
-RUN mkdir -p /www && \
+RUN chown -R apache:www-data /var/www && \
+    mkdir -p /www && \
     chown -R apache:www-data /www && \
     mkdir -p /etc/apache2/vhost && \
     chown -R apache:www-data /etc/apache2/vhost && \

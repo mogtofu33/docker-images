@@ -32,7 +32,8 @@ RUN apk add --update \
 #RUN sed -i "s/extension=xdebug.so/zend_extension=xdebug.so/" /etc/php/conf.d/xdebug.ini
 
 # Prepare Web root and Apache.
-RUN mkdir -p /www && \
+RUN chown -R apache:www-data /var/www && \
+    mkdir -p /www && \
     chown -R apache:www-data /www && \
     mkdir /etc/apache2/vhost && \
     chown -R apache:apache /etc/apache2/vhost && \
