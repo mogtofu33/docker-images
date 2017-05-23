@@ -6,7 +6,10 @@ MAINTAINER moimog33@gmail.com
 #ENV LOCAL_UID=
 #ENV LOCAL_GID=
 
-# Flag to install specific programs.
+ENV PATH "/composer/vendor/bin:$PATH"
+ENV COMPOSER_ALLOW_SUPERUSER 1
+ENV COMPOSER_HOME /composer
+ENV COMPOSER_VERSION 1.4.2
 ENV SETUP_COMPOSER=0
 
 # Install Php extensions, Apache and database client/rsync for Drush.
@@ -28,6 +31,20 @@ RUN apk add --update \
 # php5-apcu php5-memcached php5-xdebug php5-redis
 # Fix xdebug warning.
 #RUN sed -i "s/extension=xdebug.so/zend_extension=xdebug.so/" /etc/php/conf.d/xdebug.ini
+
+# Install Composer.
+RUN curl -s -f -L -o /tmp/installer.php https://raw.githubusercontent.com/composer/getcomposer.org/da290238de6d63faace0343efbdd5aa9354332c5/web/installer \
+    && php -r " \
+      \$signature = '669656bab3166a7aff8a7506b8cb2d1c292f042046c5a994c43155c0be6190fa0355160742ab2e1c88d40d5be660b410'; \
+      \$hash = hash('SHA384', file_get_contents('/tmp/installer.php')); \
+      if (!hash_equals(\$signature, \$hash)) { \
+          unlink('/tmp/installer.php'); \
+          echo 'Integrity check failed, installer is either corrupt or worse.' . PHP_EOL; \
+          exit(1); \
+      }" \
+    && php /tmp/installer.php --no-ansi --install-dir=/usr/bin --filename=composer --version=${COMPOSER_VERSION} \
+    && rm /tmp/installer.php \
+    && composer --ansi --version --no-interaction
 
 # Prepare Web root and Apache.
 RUN chown -R apache:www-data /var/www && \
