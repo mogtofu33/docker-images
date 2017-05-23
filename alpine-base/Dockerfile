@@ -42,5 +42,7 @@ RUN apk del tzdata && \
 RUN mkdir -p /www && \
     mkdir /scripts && \
     chmod -R 755 /scripts
+
 COPY ./scripts/change_uid_gid.sh /scripts/change_uid_gid.sh
+
 RUN chmod +x /scripts/change_uid_gid.sh
