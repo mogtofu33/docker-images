@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Fix access docker.sock for our dashboard.
-if [ -f /var/run/docker.sock ]; then
+if [ -e /var/run/docker.sock ]; then
   chown apache:www-data /var/run/docker.sock
 fi
 
@@ -25,10 +25,10 @@ if ! pgrep -x "httpd" > /dev/null
 then
   echo "[i] Apache stopped..."
   tail -n 5 /var/log/apache2/error.log
-  if [ -f /var/log/apache2/ssl_error.log ]; then
+  if [ -e /var/log/apache2/ssl_error.log ]; then
     tail -n 5 /var/log/apache2/ssl_error.log
   fi
-  exit 0;
+  # exit;
+else
+  echo "[i] Apache running!"
 fi
-
-echo "[i] Apache running!"
