@@ -59,7 +59,8 @@ fi
 # Change folders uid/gid.
 if [ "$OLD_UID" != "$NEW_UID" ] || [ "$OLD_GID" != "$NEW_GID" ]; then
   echo "[i] Update folders $OLD_UID:$OLD_GID > $NEW_UID:$NEW_GID..."
-  find / \( -name proc -o -name dev -o -name sys \) -prune -o \( -user ${OLD_UID} -exec chown -Rfh ${NEW_UID}:${NEW_GID} {} \; \)
+  find / \( -name proc -o -name dev -o -name sys \) -prune -o \( -user ${OLD_UID} -exec chown -Rfh ${NEW_UID} {} \; \)
+  find / \( -name proc -o -name dev -o -name sys \) -prune -o \( -group ${OLD_GID} -exec chgrp -Rfh ${NEW_GID} {} \; \)
 else
   echo "[i] No folders update needed."
 fi
