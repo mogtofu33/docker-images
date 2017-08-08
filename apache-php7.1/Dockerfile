@@ -56,8 +56,9 @@ RUN /composer/vendor/bin/phpcs --config-set installed_paths /composer/vendor/dru
 RUN cp /root/.bashrc /var/www/.bashrc && \
     chown apache:www-data /var/www/.bashrc
 
-# Prepare php and apache logs.
-RUN mkdir -p /var/log/apache2 && \
+# Fix web root permission, set php and apache logs.
+RUN chown -R apache:www-data /var/www && \
+    mkdir -p /var/log/apache2 && \
     touch /var/log/apache2/php-error.log && \
     chown -R apache:www-data /var/log/apache2
 
@@ -71,6 +72,6 @@ RUN chmod +x /scripts/run.sh
 EXPOSE 80
 EXPOSE 443
 
-VOLUME ["/www", "/etc/apache2/vhost", "/var/log/apache2"]
+VOLUME ["/var/www", "/etc/apache2/vhost", "/var/log/apache2"]
 
 ENTRYPOINT ["/bin/bash" , "/scripts/run.sh"]
