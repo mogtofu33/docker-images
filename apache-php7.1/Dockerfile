@@ -17,7 +17,7 @@ RUN apk add --update \
     php7-json php7-zlib php7-phar php7-openssl php7-sockets \
     php7-pdo php7-pdo_mysql php7-mysqlnd php7-mysqli \
     php7-pdo_pgsql php7-pgsql php7-sqlite3 \
-    php7-iconv php7-mcrypt php7-intl php7-mbstring php7-pcntl php7-tokenizer \
+    php7-iconv php7-mcrypt php7-intl php7-mbstring php7-pcntl php7-tokenizer php7-simplexml \
     php7-ctype  php7-bcmath php7-dom php7-xsl php7-xml php7-xmlrpc php7-xmlreader \
     php7-soap php7-ldap php7-opcache php7-xdebug php7-apcu php7-phpdbg \
     php7-posix php7-session php7-curl php7-gd php7-exif \
