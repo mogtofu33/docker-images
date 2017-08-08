@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# This script is an helper to globally change a user uid/gid.
+# Code inspired from
+# https://muffinresearch.co.uk/linux-changing-uids-and-gids-for-user/
 echo "[i] Fix uid/gid started..."
 
 # Get parameters.
@@ -52,15 +55,18 @@ else
     usermod -g ${NEW_GID} ${OLD_USER} 2>/dev/null
     echo "[i] Group updated $OLD_GID > $NEW_GID"
   else
+    # Still force user group change.
+    usermod -g ${NEW_GID} ${OLD_USER} 2>/dev/null
     echo "[i] Group gid match."
   fi
 fi
 
-# Change folders uid/gid.
+# Change folders uid/gid on all the system.
 if [ "$OLD_UID" != "$NEW_UID" ] || [ "$OLD_GID" != "$NEW_GID" ]; then
   echo "[i] Update folders $OLD_UID:$OLD_GID > $NEW_UID:$NEW_GID..."
-  find / \( -name proc -o -name dev -o -name sys \) -prune -o \( -user ${OLD_UID} -exec chown -Rfh ${NEW_UID} {} \; \)
-  find / \( -name proc -o -name dev -o -name sys \) -prune -o \( -group ${OLD_GID} -exec chgrp -Rfh ${NEW_GID} {} \; \)
+  # find / \( -name proc -o -name dev -o -name sys \) -prune -o \( -user ${OLD_UID} -exec chown -Rfh ${NEW_UID} {} \; \)
+  # find / \( -name proc -o -name dev -o -name sys \) -prune -o \( -group ${OLD_GID} -exec chgrp -Rfh ${NEW_GID} {} \; \)
+  find / \( -name proc -o -name dev -o -name sys \) -prune -o \( -user ${OLD_UID} -exec chown -Rfh ${NEW_UID} {} + -o -group ${OLD_GID} -exec chgrp -Rfh ${NEW_GID} {} + \)
 else
   echo "[i] No folders update needed."
 fi
