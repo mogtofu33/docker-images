@@ -60,7 +60,8 @@ RUN cp /root/.bashrc /var/www/.bashrc && \
 RUN chown -R apache:www-data /var/www && \
     mkdir -p /var/log/apache2 && \
     touch /var/log/apache2/php-error.log && \
-    chown -R apache:www-data /var/log/apache2
+    chown -R apache:www-data /var/log/apache2 && \
+    ln -s /var/www/localhost/ /www/
 
 # Clean.
 RUN rm -rf /var/cache/apk/*
