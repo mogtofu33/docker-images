@@ -39,8 +39,7 @@ RUN apk del tzdata && \
     rm -rf /var/cache/apk/*
 
 # Prepare folders and set our scripts.
-RUN mkdir -p /www && \
-    mkdir /scripts && \
+RUN mkdir /scripts && \
     chmod -R 755 /scripts
 
 COPY ./scripts/change_uid_gid.sh /scripts/change_uid_gid.sh
