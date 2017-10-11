@@ -104,7 +104,8 @@ RUN apk add --update \
     apache2-icons \
     apache2-ldap \
     apache2-proxy \
-    apache2-ssl
+    apache2-ssl \
+    apache-mod-fcgid
 # Database clients and sync needed for Drush.
 RUN apk add --update \
     mysql-client \
@@ -114,9 +115,9 @@ RUN apk add --update \
     openssl
 
 # Fix Apache.
-RUN mv /etc/apache2/conf.d/ssl.conf /etc/apache2/conf.d/ssl.conf.disabled && \
-    mv /etc/apache2/conf.d/proxy.conf /etc/apache2/conf.d/proxy.conf.disabled && \
-    echo "ServerName localhost:80" >> /etc/apache2/httpd.conf
+# RUN mv /etc/apache2/conf.d/ssl.conf /etc/apache2/conf.d/ssl.conf.disabled && \
+#     mv /etc/apache2/conf.d/proxy.conf /etc/apache2/conf.d/proxy.conf.disabled && \
+#     echo "ServerName localhost:80" >> /etc/apache2/httpd.conf
 
 # Install Composer.
 # from https://github.com/composer/docker/blob/master/1.5/Dockerfile
@@ -154,9 +155,11 @@ RUN chown -R apache:www-data /var/www && \
 # Clean.
 RUN rm -rf /var/cache/apk/*
 
-# Set apache script
+# Set apache script.
 COPY scripts/run.sh /scripts/run.sh
-RUN chmod +x /scripts/run.sh
+COPY scripts/generate_certificate.sh /scripts/generate_certificate.sh
+RUN chmod +x /scripts/run.sh /scripts/generate_certificate.sh
+
 
 EXPOSE 80
 EXPOSE 443
