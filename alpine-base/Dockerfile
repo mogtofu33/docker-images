@@ -21,6 +21,7 @@ RUN apk add --update \
     shadow \
     curl \
     wget \
+    lynx \
     tzdata
 
 # Set timezone.
