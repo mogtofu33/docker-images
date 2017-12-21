@@ -3,13 +3,13 @@ FROM mogtofu33/alpine-base:latest
 MAINTAINER moimog33@gmail.com
 
 # Set specific uid/gid to web server user to fix permissions issues.
-ENV LOCAL_UID=1001
-ENV LOCAL_GID=1001
+#ENV LOCAL_UID=1000
+#ENV LOCAL_GID=1000
 
 ENV PATH "/composer/vendor/bin:$PATH"
 ENV COMPOSER_ALLOW_SUPERUSER 1
 ENV COMPOSER_HOME /composer
-ENV COMPOSER_VERSION 1.5.2
+ENV COMPOSER_VERSION 1.5.6
 
 # Install Php extensions, ordered by Alpine package list.
 # https://pkgs.alpinelinux.org/packages?name=php7*&branch=v3.6&arch=x86_64
@@ -104,9 +104,9 @@ RUN apk add --update \
 
 # Install Composer.
 # from https://github.com/composer/docker/blob/master/1.5/Dockerfile
-RUN curl -s -f -L -o /tmp/installer.php https://raw.githubusercontent.com/composer/getcomposer.org/da290238de6d63faace0343efbdd5aa9354332c5/web/installer \
+RUN curl -s -f -L -o /tmp/installer.php https://raw.githubusercontent.com/composer/getcomposer.org/b107d959a5924af895807021fcef4ffec5a76aa9/web/installer \
     && php -r " \
-      \$signature = '669656bab3166a7aff8a7506b8cb2d1c292f042046c5a994c43155c0be6190fa0355160742ab2e1c88d40d5be660b410'; \
+      \$signature = '544e09ee996cdf60ece3804abc52599c22b1f40f4323403c44d44fdfdd586475ca9813a858088ffbc1f233e9b180f061'; \
       \$hash = hash('SHA384', file_get_contents('/tmp/installer.php')); \
       if (!hash_equals(\$signature, \$hash)) { \
           unlink('/tmp/installer.php'); \
