@@ -1,4 +1,4 @@
-FROM alpine:3.6
+FROM alpine:3.7
 
 MAINTAINER moimog33@gmail.com
 
@@ -43,6 +43,6 @@ RUN apk del tzdata && \
 RUN mkdir /scripts && \
     chmod -R 755 /scripts
 
-COPY ./scripts/change_uid_gid.sh /scripts/change_uid_gid.sh
+COPY ./scripts /scripts/
 
-RUN chmod +x /scripts/change_uid_gid.sh
+RUN chmod -R +x /scripts/*.sh
