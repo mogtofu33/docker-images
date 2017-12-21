@@ -11,11 +11,13 @@ ENV COMPOSER_ALLOW_SUPERUSER 1
 ENV COMPOSER_HOME /composer
 ENV COMPOSER_VERSION 1.5.6
 
-# Install Php extensions, ordered by Alpine package list.
-# https://pkgs.alpinelinux.org/packages?name=php7*&branch=v3.6&arch=x86_64
+# Install Php extensions, ordered by Alpine package list to ease update:
+# https://pkgs.alpinelinux.org/packages?name=php7*&branch=v3.7&arch=x86_64
 RUN apk add --update \
+    php7-memcached \
     php7 \
     php7-common \
+    php7-sysvsem \
     php7-sysvshm \
     php7-tidy \
     php7-tokenizer \
@@ -39,8 +41,6 @@ RUN apk add --update \
     php7-sockets \
     php7-sqlite3 \
     php7-sysvmsg \
-    php7-sysvsem \
-    php7-mysqli \
     php7-mysqlnd \
     php7-odbc \
     php7-opcache \
@@ -53,7 +53,6 @@ RUN apk add --update \
     php7-pdo_pgsql \
     php7-pdo_sqlite \
     php7-pgsql \
-    php7-fileinfo \
     php7-ftp \
     php7-gd \
     php7-gettext \
@@ -65,33 +64,36 @@ RUN apk add --update \
     php7-ldap \
     php7-mbstring \
     php7-mcrypt \
+    php7-mysqli \
     php7-bcmath \
     php7-bz2 \
     php7-calendar \
-    php7-cgi \
     php7-ctype \
     php7-curl \
     php7-dba \
     php7-dom \
     php7-enchant \
     php7-exif \
-    php7-fpm \
+    php7-fileinfo \
     php7-pear \
     php7-apache2 \
+    php7-cgi \
     php7-dev \
     php7-doc \
     php7-embed \
+    php7-fpm \
     php7-litespeed \
     php7-phpdbg \
-    php7-zmq \
-    php7-amqp \
-    php7-xdebug \
-    php7-mailparse \
     php7-imagick \
+    php7-ssh2 \
+    php7-xdebug \
+    php7-amqp \
+    php7-mailparse \
+    php7-oauth \
     php7-pear-mail_mime \
-    php7-memcached \
-    php7-redis \
+    php7-zmq \
     php7-apcu \
+    php7-redis \
     php7-pear-net_socket
 
 # Database clients and sync needed for Drush.
