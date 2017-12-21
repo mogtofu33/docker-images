@@ -3,19 +3,24 @@ FROM mogtofu33/alpine-base:latest
 MAINTAINER moimog33@gmail.com
 
 # Set specific uid/gid to web server user to fix permissions issues.
-#ENV LOCAL_UID=
-#ENV LOCAL_GID=
+#ENV LOCAL_UID=1000
+#ENV LOCAL_GID=1000
+
+# Leave empty to not generate a certificate.
+ENV GENERATE_APACHE_CERTIFICATE=
 
 ENV PATH "/composer/vendor/bin:$PATH"
 ENV COMPOSER_ALLOW_SUPERUSER 1
 ENV COMPOSER_HOME /composer
-ENV COMPOSER_VERSION 1.5.2
+ENV COMPOSER_VERSION 1.5.6
 
 # Install Php extensions, ordered by Alpine package list.
-# https://pkgs.alpinelinux.org/packages?name=php7*&branch=v3.6&arch=x86_64
+# https://pkgs.alpinelinux.org/packages?name=php7*&branch=v3.7&arch=x86_64
 RUN apk add --update \
+    php7-memcached \
     php7 \
     php7-common \
+    php7-sysvsem \
     php7-sysvshm \
     php7-tidy \
     php7-tokenizer \
@@ -39,8 +44,6 @@ RUN apk add --update \
     php7-sockets \
     php7-sqlite3 \
     php7-sysvmsg \
-    php7-sysvsem \
-    php7-mysqli \
     php7-mysqlnd \
     php7-odbc \
     php7-opcache \
@@ -53,7 +56,6 @@ RUN apk add --update \
     php7-pdo_pgsql \
     php7-pdo_sqlite \
     php7-pgsql \
-    php7-fileinfo \
     php7-ftp \
     php7-gd \
     php7-gettext \
@@ -65,36 +67,40 @@ RUN apk add --update \
     php7-ldap \
     php7-mbstring \
     php7-mcrypt \
+    php7-mysqli \
     php7-bcmath \
     php7-bz2 \
     php7-calendar \
-    php7-cgi \
     php7-ctype \
     php7-curl \
     php7-dba \
     php7-dom \
     php7-enchant \
     php7-exif \
-    php7-fpm \
+    php7-fileinfo \
     php7-pear \
     php7-apache2 \
+    php7-cgi \
     php7-dev \
     php7-doc \
     php7-embed \
+    php7-fpm \
     php7-litespeed \
     php7-phpdbg \
-    php7-zmq \
-    php7-amqp \
-    php7-xdebug \
-    php7-mailparse \
     php7-imagick \
+    php7-ssh2 \
+    php7-xdebug \
+    php7-amqp \
+    php7-mailparse \
+    php7-oauth \
     php7-pear-mail_mime \
-    php7-memcached \
-    php7-redis \
+    php7-zmq \
     php7-apcu \
+    php7-redis \
     php7-pear-net_socket
+
 # Apache packages.
-# https://pkgs.alpinelinux.org/packages?name=apache2*&branch=v3.6&arch=x86_64
+# https://pkgs.alpinelinux.org/packages?name=apache*&branch=v3.7&arch=x86_64
 RUN apk add --update \
     apache2 \
     apache2-utils \
@@ -106,6 +112,7 @@ RUN apk add --update \
     apache2-proxy \
     apache2-ssl \
     apache-mod-fcgid
+
 # Database clients and sync needed for Drush.
 RUN apk add --update \
     mysql-client \
@@ -114,16 +121,11 @@ RUN apk add --update \
     openssh \
     openssl
 
-# Fix Apache.
-# RUN mv /etc/apache2/conf.d/ssl.conf /etc/apache2/conf.d/ssl.conf.disabled && \
-#     mv /etc/apache2/conf.d/proxy.conf /etc/apache2/conf.d/proxy.conf.disabled && \
-#     echo "ServerName localhost:80" >> /etc/apache2/httpd.conf
-
 # Install Composer.
 # from https://github.com/composer/docker/blob/master/1.5/Dockerfile
-RUN curl -s -f -L -o /tmp/installer.php https://raw.githubusercontent.com/composer/getcomposer.org/da290238de6d63faace0343efbdd5aa9354332c5/web/installer \
+RUN curl -s -f -L -o /tmp/installer.php https://raw.githubusercontent.com/composer/getcomposer.org/b107d959a5924af895807021fcef4ffec5a76aa9/web/installer \
     && php -r " \
-      \$signature = '669656bab3166a7aff8a7506b8cb2d1c292f042046c5a994c43155c0be6190fa0355160742ab2e1c88d40d5be660b410'; \
+      \$signature = '544e09ee996cdf60ece3804abc52599c22b1f40f4323403c44d44fdfdd586475ca9813a858088ffbc1f233e9b180f061'; \
       \$hash = hash('SHA384', file_get_contents('/tmp/installer.php')); \
       if (!hash_equals(\$signature, \$hash)) { \
           unlink('/tmp/installer.php'); \
@@ -147,23 +149,18 @@ RUN cp /root/.bashrc /var/www/.bashrc && \
     chown apache:www-data /var/www/.bashrc
 
 # Fix web root permission, set php and apache logs.
-RUN chown -R apache:www-data /var/www && \
-    mkdir -p /var/log/apache2 && \
-    touch /var/log/apache2/php-error.log && \
-    chown -R apache:www-data /var/log/apache2
+RUN chown -R apache:www-data /var/www
 
 # Clean.
 RUN rm -rf /var/cache/apk/*
 
 # Set apache script.
 COPY scripts/run.sh /scripts/run.sh
-COPY scripts/generate_certificate.sh /scripts/generate_certificate.sh
-RUN chmod +x /scripts/run.sh /scripts/generate_certificate.sh
-
+RUN chmod +x /scripts/run.sh
 
 EXPOSE 80
 EXPOSE 443
 
-VOLUME ["/var/www", "/etc/apache2/vhost", "/var/log/apache2"]
+VOLUME ["/var/www/localhost"]
 
 ENTRYPOINT ["/bin/bash" , "/scripts/run.sh"]

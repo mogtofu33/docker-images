@@ -1,12 +1,14 @@
 #!/bin/sh
 
 # Fix access docker.sock for our dashboard.
-if [ -e /var/run/docker.sock ]; then
-  chown apache:www-data /var/run/docker.sock
-fi
+# if [ -e /var/run/docker.sock ]; then
+#   chown apache:www-data /var/run/docker.sock
+# fi
 
 # Generate ssl certificate if needed.
-# /scripts/generate_certificate.sh
+if [ "$GENERATE_APACHE_CERTIFICATE" != "" ]; then
+  /scripts/generate_apache_certificate.sh
+fi
 
 # Set uid/gid to fix data permissions.
 if [ "$LOCAL_UID" != "" ]; then
