@@ -24,17 +24,3 @@ echo "[i] Starting Apache..."
 # Run apache httpd daemon.
 exec httpd -D FOREGROUND -f /etc/apache2/httpd.conf &
 exec /usr/sbin/php-fpm7 -F
-
-# Test if apache is running, if not send error.
-sleep 1s
-if ! pgrep -x "httpd" > /dev/null
-then
-  echo "[i] Apache stopped..."
-  tail -n 5 /var/log/apache2/error.log
-  if [ -e /var/log/apache2/ssl_error.log ]; then
-    tail -n 5 /var/log/apache2/ssl_error.log
-  fi
-  # exit;
-else
-  echo "[i] Apache running!"
-fi
