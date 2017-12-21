@@ -6,7 +6,9 @@ if [ -e /var/run/docker.sock ]; then
 fi
 
 # Generate ssl certificate if needed.
-# /scripts/generate_certificate.sh
+if [ "$GENERATE_APACHE_CERTIFICATE" != "" ]; then
+  /scripts/generate_apache_certificate.sh
+fi
 
 # Set uid/gid to fix data permissions.
 if [ "$LOCAL_UID" != "" ]; then
