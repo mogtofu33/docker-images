@@ -9,6 +9,7 @@ MAINTAINER moimog33@gmail.com
 # Leave empty to not generate a certificate.
 ENV GENERATE_APACHE_CERTIFICATE=
 
+# See https://hub.docker.com/_/composer/
 ENV PATH "/composer/vendor/bin:$PATH"
 ENV COMPOSER_ALLOW_SUPERUSER 1
 ENV COMPOSER_HOME /composer
@@ -104,7 +105,6 @@ RUN apk add --update \
 RUN apk add --update \
     apache2 \
     apache2-utils \
-    apache2-doc \
     apache2-error \
     apache2-http2 \
     apache2-icons \
