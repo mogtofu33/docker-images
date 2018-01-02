@@ -14,7 +14,6 @@ ENV GENERATE_APACHE_CERTIFICATE=
 RUN apk add --update \
     apache2 \
     apache2-utils \
-    apache2-doc \
     apache2-error \
     apache2-http2 \
     apache2-icons \
