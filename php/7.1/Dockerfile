@@ -6,6 +6,7 @@ MAINTAINER moimog33@gmail.com
 #ENV LOCAL_UID=1000
 #ENV LOCAL_GID=1000
 
+# See https://hub.docker.com/_/composer/
 ENV PATH "/composer/vendor/bin:$PATH"
 ENV COMPOSER_ALLOW_SUPERUSER 1
 ENV COMPOSER_HOME /composer
