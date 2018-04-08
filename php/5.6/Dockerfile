@@ -120,9 +120,9 @@ RUN set -xe \
     && pecl install xdebug-2.5.5 \
     # Php 5 support dropped on > 2.2.0
     && echo no | pecl install memcached-2.2.0 \
-    && printf "\n" | pecl install apcu-4.0.11 \
-    && pecl install redis \
-    && rm -rf /usr/share/php \
+    # Php 5 support dropped on > 4
+    # && printf "\n" | pecl install apcu-4.0.11 \
+    && printf "\n" | pecl install redis \
     && rm -rf /tmp/* \
     && apk del .phpize-deps
 
