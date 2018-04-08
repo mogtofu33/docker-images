@@ -10,7 +10,7 @@ MAINTAINER moimog33@gmail.com
 ENV PATH "/composer/vendor/bin:$PATH"
 ENV COMPOSER_ALLOW_SUPERUSER 1
 ENV COMPOSER_HOME /composer
-ENV COMPOSER_VERSION 1.5.6
+ENV COMPOSER_VERSION 1.6.3
 
 # Install Php extensions, ordered by Alpine package list to ease update:
 # https://pkgs.alpinelinux.org/packages?name=php7*&branch=v3.7&arch=x86_64
