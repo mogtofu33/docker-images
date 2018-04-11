@@ -15,7 +15,7 @@ RUN apk update && \
     apk upgrade
 
 # With minimal apps.
-RUN apk add --update \
+RUN apk add --update --no-cache \
     git \
     bash \
     shadow \

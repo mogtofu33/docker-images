@@ -10,9 +10,12 @@ ENV PATH "/composer/vendor/bin:$PATH"
 ENV COMPOSER_ALLOW_SUPERUSER 1
 ENV COMPOSER_HOME /composer
 ENV COMPOSER_VERSION 1.6.3
+ENV COMPOSER_INSTALLER_URL "https://raw.githubusercontent.com/composer/getcomposer.org/b107d959a5924af895807021fcef4ffec5a76aa9/web/installer"
+ENV COMPOSER_INSTALLER_HASH "544e09ee996cdf60ece3804abc52599c22b1f40f4323403c44d44fdfdd586475ca9813a858088ffbc1f233e9b180f061"
+ENV COMPOSER_LIBRARIES "hirak/prestissimo:^0.3 drupal/coder"
 
 # Install Php extensions, Apache and database client/rsync for Drush.
-RUN apk add --update \
+RUN apk add --update --no-cache \
     php5-cli php5-fpm \
     php5-json php5-zlib php5-xml php5-phar php5-openssl php5-sockets \
     php5-pdo php5-pdo_mysql php5-mysql php5-mysqli \
@@ -68,9 +71,10 @@ RUN set -xe \
     && apk del .phpize-deps
 
 # Install Composer.
-RUN curl -s -f -L -o /tmp/installer.php https://raw.githubusercontent.com/composer/getcomposer.org/da290238de6d63faace0343efbdd5aa9354332c5/web/installer \
+# from https://github.com/composer/docker/blob/master/1.5/Dockerfile
+RUN curl -s -f -L -o /tmp/installer.php ${COMPOSER_INSTALLER_URL} \
     && php -r " \
-      \$signature = '669656bab3166a7aff8a7506b8cb2d1c292f042046c5a994c43155c0be6190fa0355160742ab2e1c88d40d5be660b410'; \
+      \$signature = '${COMPOSER_INSTALLER_HASH}'; \
       \$hash = hash('SHA384', file_get_contents('/tmp/installer.php')); \
       if (!hash_equals(\$signature, \$hash)) { \
           unlink('/tmp/installer.php'); \
@@ -78,10 +82,10 @@ RUN curl -s -f -L -o /tmp/installer.php https://raw.githubusercontent.com/compos
           exit(1); \
       }" \
     && php /tmp/installer.php --no-ansi --install-dir=/usr/bin --filename=composer --version=${COMPOSER_VERSION} \
-    && rm /tmp/installer.php \
-    && composer --ansi --version --no-interaction
-RUN /usr/bin/composer global require "hirak/prestissimo:^0.3"
-RUN /usr/bin/composer global require "drupal/coder"
+    && composer --ansi --version --no-interaction \
+    && rm -rf /tmp/* /tmp/.htaccess
+
+RUN /usr/bin/composer global require "${COMPOSER_LIBRARIES}"
 RUN /composer/vendor/bin/phpcs --config-set installed_paths /composer/vendor/drupal/coder/coder_sniffer
 
 # Fix composer cache folder permission to run composer as apache user.

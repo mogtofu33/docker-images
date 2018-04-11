@@ -11,7 +11,7 @@ ENV GENERATE_APACHE_CERTIFICATE=
 
 # Apache packages.
 # https://pkgs.alpinelinux.org/packages?name=apache*&branch=v3.7&arch=x86_64
-RUN apk add --update \
+RUN apk add --update --no-cache \
     apache2 \
     apache2-utils \
     apache2-error \
@@ -23,7 +23,7 @@ RUN apk add --update \
     apache-mod-fcgid
 
 # Other packages needed.
-RUN apk add --update \
+RUN apk add --update --no-cache \
     rsync \
     openssh \
     openssl

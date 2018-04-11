@@ -11,14 +11,16 @@ ENV PATH "/composer/vendor/bin:$PATH"
 ENV COMPOSER_ALLOW_SUPERUSER 1
 ENV COMPOSER_HOME /composer
 ENV COMPOSER_VERSION 1.6.3
+ENV COMPOSER_INSTALLER_URL "https://raw.githubusercontent.com/composer/getcomposer.org/b107d959a5924af895807021fcef4ffec5a76aa9/web/installer"
+ENV COMPOSER_INSTALLER_HASH "544e09ee996cdf60ece3804abc52599c22b1f40f4323403c44d44fdfdd586475ca9813a858088ffbc1f233e9b180f061"
+ENV COMPOSER_LIBRARIES "hirak/prestissimo:^0.3 drupal/coder"
 
 # trust this project public key to trust the packages.
 ADD https://php.codecasts.rocks/php-alpine.rsa.pub /etc/apk/keys/php-alpine.rsa.pub
 
 # Install Php extensions,Alpine package list to:
 # https://php.codecasts.rocks/v3.7/php-7.2
-RUN set -xe \
-    && echo "https://php.codecasts.rocks/v3.7/php-7.2" >> /etc/apk/repositories \
+RUN echo "https://php.codecasts.rocks/v3.7/php-7.2" >> /etc/apk/repositories \
     && echo "@php https://php.codecasts.rocks/v3.7/php-7.2" >> /etc/apk/repositories \
     && apk add --update --no-cache \
     ca-certificates \
@@ -89,7 +91,7 @@ RUN set -xe \
     php7-zip \
     php7-zlib
 
-RUN apk add --update \
+RUN apk add --update --no-cache \
     mysql-client \
     postgresql-client \
     rsync \
@@ -102,9 +104,9 @@ RUN ln -s /usr/bin/php7 /usr/bin/php && \
 
 # Install Composer.
 # from https://github.com/composer/docker/blob/master/1.5/Dockerfile
-RUN curl -s -f -L -o /tmp/installer.php https://raw.githubusercontent.com/composer/getcomposer.org/b107d959a5924af895807021fcef4ffec5a76aa9/web/installer \
+RUN curl -s -f -L -o /tmp/installer.php ${COMPOSER_INSTALLER_URL} \
     && php -r " \
-      \$signature = '544e09ee996cdf60ece3804abc52599c22b1f40f4323403c44d44fdfdd586475ca9813a858088ffbc1f233e9b180f061'; \
+      \$signature = '${COMPOSER_INSTALLER_HASH}'; \
       \$hash = hash('SHA384', file_get_contents('/tmp/installer.php')); \
       if (!hash_equals(\$signature, \$hash)) { \
           unlink('/tmp/installer.php'); \
@@ -116,13 +118,11 @@ RUN curl -s -f -L -o /tmp/installer.php https://raw.githubusercontent.com/compos
     && rm -rf /tmp/* /tmp/.htaccess
 
 # Install prestissimo and php code sniffer with Drupal standards.
-RUN /usr/bin/composer global require "hirak/prestissimo:^0.3"
-RUN /usr/bin/composer global require "drupal/coder"
+RUN /usr/bin/composer global require "${COMPOSER_LIBRARIES}"
 RUN /composer/vendor/bin/phpcs --config-set installed_paths /composer/vendor/drupal/coder/coder_sniffer
 
 # ensure www-data user exists
-RUN set -x \
-    && mkdir -p /var/www/localhost \
+RUN mkdir -p /var/www/localhost \
     && addgroup -g 82 -S www-data \
     && adduser -u 82 -D -S -G www-data apache \
     && chown -R apache:www-data /var/www
