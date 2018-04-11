@@ -12,7 +12,7 @@ ENV COMPOSER_ALLOW_SUPERUSER 1
 ENV COMPOSER_HOME /composer
 ENV COMPOSER_VERSION 1.6.3
 
-# Install Php extensions, ordered by Alpine package list to ease update:
+# Install Php extensions, Alpine package list to update:
 # https://pkgs.alpinelinux.org/packages?name=php5*&branch=v3.7&arch=x86_64
 RUN apk add --update \
     php5 \
