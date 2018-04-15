@@ -13,7 +13,6 @@ ENV COMPOSER_HOME /composer
 ENV COMPOSER_VERSION 1.6.3
 ENV COMPOSER_INSTALLER_URL "https://raw.githubusercontent.com/composer/getcomposer.org/b107d959a5924af895807021fcef4ffec5a76aa9/web/installer"
 ENV COMPOSER_INSTALLER_HASH "544e09ee996cdf60ece3804abc52599c22b1f40f4323403c44d44fdfdd586475ca9813a858088ffbc1f233e9b180f061"
-ENV COMPOSER_LIBRARIES "hirak/prestissimo:^0.3 drupal/coder"
 
 # trust this project public key to trust the packages.
 ADD https://php.codecasts.rocks/php-alpine.rsa.pub /etc/apk/keys/php-alpine.rsa.pub
@@ -118,7 +117,8 @@ RUN curl -s -f -L -o /tmp/installer.php ${COMPOSER_INSTALLER_URL} \
     && rm -rf /tmp/* /tmp/.htaccess
 
 # Install prestissimo and php code sniffer with Drupal standards.
-RUN /usr/bin/composer global require "${COMPOSER_LIBRARIES}"
+RUN /usr/bin/composer global require "hirak/prestissimo:^0.3"
+RUN /usr/bin/composer global require "drupal/coder"
 RUN /composer/vendor/bin/phpcs --config-set installed_paths /composer/vendor/drupal/coder/coder_sniffer
 
 # ensure www-data user exists
