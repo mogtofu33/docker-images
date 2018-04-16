@@ -57,7 +57,7 @@ RUN set -xe \
     && apk add --no-cache \
     --virtual .phpize-deps \
     $PHPIZE_DEPS \
-    && sed -i "$ s|\-n||g" $(which pecl) \
+    && sed -i "$ s|\-n||g" /usr/bin/pecl \
     && pecl channel-update pecl.php.net \
     # Php 5 support dropped on > 2.5.5
     && pecl install xdebug-2.5.5 \
