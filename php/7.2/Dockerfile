@@ -10,7 +10,7 @@ MAINTAINER moimog33@gmail.com
 ENV PATH "/composer/vendor/bin:$PATH"
 ENV COMPOSER_ALLOW_SUPERUSER 1
 ENV COMPOSER_HOME /composer
-ENV COMPOSER_VERSION 1.6.3
+ENV COMPOSER_VERSION 1.6.5
 ENV COMPOSER_INSTALLER_URL "https://raw.githubusercontent.com/composer/getcomposer.org/b107d959a5924af895807021fcef4ffec5a76aa9/web/installer"
 ENV COMPOSER_INSTALLER_HASH "544e09ee996cdf60ece3804abc52599c22b1f40f4323403c44d44fdfdd586475ca9813a858088ffbc1f233e9b180f061"
 
@@ -24,6 +24,7 @@ RUN echo "https://php.codecasts.rocks/v3.7/php-7.2" >> /etc/apk/repositories \
     && apk add --update --no-cache \
     ca-certificates \
     curl \
+    imagemagick \
     openssh-client \
     libmemcached-libs \
     libevent \
