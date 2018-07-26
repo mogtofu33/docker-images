@@ -1,4 +1,4 @@
-FROM mogtofu33/alpine-base:latest
+FROM mogtofu33/alpine-base:3.7
 
 MAINTAINER moimog33@gmail.com
 
@@ -6,19 +6,18 @@ MAINTAINER moimog33@gmail.com
 #ENV LOCAL_UID=1000
 #ENV LOCAL_GID=1000
 
-# See https://hub.docker.com/_/composer/
-ENV PATH "/composer/vendor/bin:$PATH"
-ENV COMPOSER_ALLOW_SUPERUSER 1
-ENV COMPOSER_HOME /composer
-ENV COMPOSER_VERSION 1.6.5
-ENV COMPOSER_INSTALLER_URL "https://raw.githubusercontent.com/composer/getcomposer.org/b107d959a5924af895807021fcef4ffec5a76aa9/web/installer"
-ENV COMPOSER_INSTALLER_HASH "544e09ee996cdf60ece3804abc52599c22b1f40f4323403c44d44fdfdd586475ca9813a858088ffbc1f233e9b180f061"
+# Database clients and sync needed for Drush.
+RUN apk add --update --no-cache \
+    mysql-client \
+    postgresql-client \
+    rsync \
+    openssh \
+    openssl
 
 # Install Php extensions,Alpine package list to:
 # https://pkgs.alpinelinux.org/packages?name=php7*&branch=v3.7&arch=x86_64
 RUN apk add --update --no-cache \
     imagemagick \
-    php7-memcached \
     php7 \
     php7-common \
     php7-sysvsem \
@@ -87,48 +86,30 @@ RUN apk add --update --no-cache \
     php7-fpm \
     php7-litespeed \
     php7-phpdbg \
-    php7-imagick \
-    php7-ssh2 \
-    php7-xdebug \
     php7-amqp \
     php7-mailparse \
     php7-oauth \
     php7-pear-mail_mime \
     php7-zmq \
     php7-apcu \
+    php7-memcached \
+    php7-imagick \
+    php7-ssh2 \
+    php7-xdebug \
     php7-redis \
     php7-pear-net_socket
 
-# Database clients and sync needed for Drush.
-RUN apk add --update --no-cache \
-    mysql-client \
-    postgresql-client \
-    rsync \
-    openssh \
-    openssl
-
-# Install Composer.
-# from https://github.com/composer/docker/blob/master/1.5/Dockerfile
-RUN curl -s -f -L -o /tmp/installer.php ${COMPOSER_INSTALLER_URL} \
-    && php -r " \
-      \$signature = '${COMPOSER_INSTALLER_HASH}'; \
-      \$hash = hash('SHA384', file_get_contents('/tmp/installer.php')); \
-      if (!hash_equals(\$signature, \$hash)) { \
-          unlink('/tmp/installer.php'); \
-          echo 'Integrity check failed, installer is either corrupt or worse.' . PHP_EOL; \
-          exit(1); \
-      }" \
-    && php /tmp/installer.php --no-ansi --install-dir=/usr/bin --filename=composer --version=${COMPOSER_VERSION} \
-    && composer --ansi --version --no-interaction \
-    && rm -rf /tmp/* /tmp/.htaccess
+# Install composer.
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Install prestissimo and php code sniffer with Drupal standards.
-RUN /usr/bin/composer global require "hirak/prestissimo:^0.3"
-RUN /usr/bin/composer global require "drupal/coder"
-RUN /composer/vendor/bin/phpcs --config-set installed_paths /composer/vendor/drupal/coder/coder_sniffer
+RUN /usr/bin/composer global require "hirak/prestissimo:^0.3" "drupal/coder"
+
+RUN ln -s /root/.composer/ /composer \
+    && ~/.composer/vendor/bin/phpcs --config-set installed_paths /composer/vendor/drupal/coder/coder_sniffer
 
 # Fix composer cache folder permission to run composer as apache user.
-RUN chown -R apache:www-data /composer/cache
+RUN chown -R apache:www-data ~/.composer/cache
 
 # Copy root bashrc config for Apache user when running cmd.
 RUN cp /root/.bashrc /var/www/.bashrc && \

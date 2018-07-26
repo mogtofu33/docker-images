@@ -1,9 +1,7 @@
 #!/bin/sh
 
-# Fix access docker.sock for our dashboard.
-# if [ -e /var/run/docker.sock ]; then
-#   chown apache:www-data /var/run/docker.sock
-# fi
+# (try to) Fix access docker.sock for our dashboard.
+/scripts/fix_docker_sock.sh
 
 # Set uid/gid to fix data permissions.
 if [ "$LOCAL_UID" != "" ]; then
