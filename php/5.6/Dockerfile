@@ -1,4 +1,4 @@
-FROM mogtofu33/alpine-base:3.8
+FROM mogtofu33/alpine-base:3.7
 
 MAINTAINER moimog33@gmail.com
 
