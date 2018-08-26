@@ -118,8 +118,8 @@ RUN cp /root/.bashrc /var/www/.bashrc && \
 # Clean.
 RUN rm -rf /var/cache/apk/*
 
-# Set apache script.
-COPY scripts/run.sh /scripts/run.sh
+# Set Php fpm start script.
+COPY ./scripts/run.sh /scripts/run.sh
 RUN chmod +x /scripts/run.sh
 
 EXPOSE 9000

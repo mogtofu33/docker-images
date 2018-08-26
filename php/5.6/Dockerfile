@@ -1,4 +1,4 @@
-FROM mogtofu33/alpine-base:latest
+FROM mogtofu33/alpine-base:3.8
 
 MAINTAINER moimog33@gmail.com
 
@@ -6,13 +6,10 @@ MAINTAINER moimog33@gmail.com
 #ENV LOCAL_UID=1000
 #ENV LOCAL_GID=1000
 
-# Database clients and sync needed for Drush.
+# Database clients and Php memchached.
 RUN apk add --update --no-cache \
     mysql-client \
     postgresql-client \
-    rsync \
-    openssh \
-    openssl \
     libmemcached-libs
 
 # Install Php extensions, Alpine package list to update:
@@ -141,8 +138,8 @@ RUN cp /root/.bashrc /var/www/.bashrc && \
 # Clean.
 RUN rm -rf /var/cache/apk/*
 
-# Set apache script.
-COPY scripts/run.sh /scripts/run.sh
+# Set Php fpm start script.
+COPY ./scripts/run.sh /scripts/run.sh
 RUN chmod +x /scripts/run.sh
 
 EXPOSE 9000

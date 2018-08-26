@@ -22,12 +22,6 @@ RUN apk add --update --no-cache \
     apache2-ssl \
     apache-mod-fcgid
 
-# Other packages needed.
-RUN apk add --update --no-cache \
-    rsync \
-    openssh \
-    openssl
-
 # Copy root bashrc config for Apache user when running cmd.
 RUN cp /root/.bashrc /var/www/.bashrc && \
     chown apache:www-data /var/www/.bashrc
@@ -38,8 +32,8 @@ RUN chown -R apache:www-data /var/www
 # Clean.
 RUN rm -rf /var/cache/apk/*
 
-# Set apache script.
-COPY scripts/run.sh /scripts/run.sh
+# Set Apache script.
+COPY ./scripts/run.sh /scripts/run.sh
 RUN chmod +x /scripts/run.sh
 
 EXPOSE 80

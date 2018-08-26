@@ -1,16 +1,11 @@
-#!/bin/sh
+#!/bin/bash
 
-# (try to) Fix access docker.sock for our dashboard.
-/scripts/fix_docker_sock.sh
+# Common commands for permissions fix.
+/scripts/init.sh
 
 # Generate ssl certificate if needed.
 if [ "$GENERATE_APACHE_CERTIFICATE" != "" ]; then
   /scripts/generate_apache_certificate.sh
-fi
-
-# Set uid/gid to fix data permissions.
-if [ "$LOCAL_UID" != "" ]; then
-  /scripts/change_uid_gid.sh apache:www-data $LOCAL_UID:$LOCAL_GID
 fi
 
 # Apache yelling about pid on container restart.
