@@ -22,7 +22,10 @@ RUN apk add --update --no-cache \
     curl \
     wget \
     lynx \
-    tzdata
+    tzdata \
+    rsync \
+    openssh \
+    openssl
 
 # Set timezone.
 RUN cp /usr/share/zoneinfo/${TIMEZONE} /etc/localtime && \
