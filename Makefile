@@ -2,7 +2,7 @@
 
 define base_build
 	@mkdir -p ./alpine-base/$(1);
-	@TIMEZONE="Pacific/Auckland" ALPINE_VERSION="$(1)" envsubst < "./alpine-base/Dockerfile.template" > "./alpine-base/$(1)/Dockerfile";
+	@TIMEZONE="Pacific/Auckland" ALPINE_VERSION="$(1)" envsubst < "./alpine-base/Dockerfile.tpl" > "./alpine-base/$(1)/Dockerfile";
 	@cp -r ./alpine-base/config/ ./alpine-base/$(1)/;
 	@cp -r ./alpine-base/scripts/ ./alpine-base/$(1)/;
 endef
@@ -24,7 +24,6 @@ endef
 define docker_clean
 	-docker stop $(1);
 	-docker rm $(1);
-	-docker rmi $(1);
 endef
 
 build:
@@ -67,4 +66,11 @@ clean:
 	$(call docker_clean,test_php_7_1)
 	$(call docker_clean,test_php_7_2)
 
-.PHONY: build test clean
+clean-images:
+	-docker rmi base_3_7;
+	-docker rmi base_3_8;
+	-docker rmi test_php_5;
+	-docker rmi test_php_7_1;
+	-docker rmi test_php_7_2;
+
+.PHONY: build test clean clean-images
