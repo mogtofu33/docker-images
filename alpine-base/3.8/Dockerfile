@@ -1,7 +1,5 @@
 FROM alpine:3.8
 
-MAINTAINER moimog33@gmail.com
-
 # Configurable settings.
 ENV TIMEZONE        Pacific/Auckland
 
@@ -28,8 +26,8 @@ RUN apk add --update --no-cache \
     openssl
 
 # Set timezone.
-RUN cp /usr/share/zoneinfo/${TIMEZONE} /etc/localtime && \
-    echo "${TIMEZONE}" > /etc/timezone
+RUN cp /usr/share/zoneinfo/Pacific/Auckland /etc/localtime && \
+    echo "Pacific/Auckland" > /etc/timezone
 
 # Copy config.
 COPY config/bashrc /root/.bashrc

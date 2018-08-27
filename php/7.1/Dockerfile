@@ -1,7 +1,5 @@
 FROM mogtofu33/alpine-base:3.7
 
-MAINTAINER moimog33@gmail.com
-
 # Set specific uid/gid to web server user to fix permissions issues.
 #ENV LOCAL_UID=1000
 #ENV LOCAL_GID=1000
@@ -99,6 +97,9 @@ RUN apk add --update --no-cache \
     php7-redis \
     php7-pear-net_socket
 
+# Fix php-fpm link.
+RUN ln -s /usr/sbin/php-fpm7 /usr/sbin/php-fpm
+
 # Install composer.
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
@@ -106,10 +107,12 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 RUN /usr/bin/composer global require "hirak/prestissimo:^0.3" "drupal/coder"
 
 RUN ln -s /root/.composer/ /composer \
-    && ~/.composer/vendor/bin/phpcs --config-set installed_paths /composer/vendor/drupal/coder/coder_sniffer
+    && /composer/vendor/bin/phpcs --config-set installed_paths  /composer/vendor/drupal/coder/coder_sniffer
 
 # Fix composer cache folder permission to run composer as apache user.
-RUN chown -R apache:www-data ~/.composer/cache
+RUN chown apache:www-data /usr/bin/composer \
+    && chmod +x /usr/bin/composer \
+    && chown -R apache:www-data  /composer/cache
 
 # Copy root bashrc config for Apache user when running cmd.
 RUN cp /root/.bashrc /var/www/.bashrc && \

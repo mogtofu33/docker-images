@@ -1,7 +1,5 @@
 FROM mogtofu33/alpine-base:3.7
 
-MAINTAINER moimog33@gmail.com
-
 # Set specific uid/gid to web server user to fix permissions issues.
 #ENV LOCAL_UID=1000
 #ENV LOCAL_GID=1000
@@ -86,7 +84,7 @@ RUN apk add --update --no-cache \
 RUN ln -s /usr/bin/php5 /usr/bin/php && \
     ln -s /usr/bin/php-fpm5 /usr/sbin/php-fpm
 
-# dependencies required for running "phpize"
+# Dependencies required for running "phpize"
 # these get automatically installed and removed by "docker-php-ext-*" (unless they're already installed)
 ENV PHPIZE_DEPS \
     autoconf \
@@ -118,18 +116,6 @@ RUN set -xe \
     && printf "\n" | pecl install redis \
     && rm -rf /tmp/* \
     && apk del .phpize-deps
-
-# Install composer.
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
-# Install prestissimo and php code sniffer with Drupal standards.
-RUN /usr/bin/composer global require "hirak/prestissimo:^0.3" "drupal/coder"
-
-RUN ln -s /root/.composer/ /composer \
-    && ~/.composer/vendor/bin/phpcs --config-set installed_paths /composer/vendor/drupal/coder/coder_sniffer
-
-# Fix composer cache folder permission to run composer as apache user.
-RUN chown -R apache:www-data ~/.composer/cache
 
 # Copy root bashrc config for Apache user when running cmd.
 RUN cp /root/.bashrc /var/www/.bashrc && \

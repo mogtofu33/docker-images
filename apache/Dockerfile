@@ -1,7 +1,5 @@
 FROM mogtofu33/alpine-base:3.8
 
-MAINTAINER moimog33@gmail.com
-
 # Set specific uid/gid to web server user to fix permissions issues.
 # ENV LOCAL_UID=1000
 # ENV LOCAL_GID=1000

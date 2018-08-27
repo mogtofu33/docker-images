@@ -5,4 +5,4 @@
 
 echo "[i] Starting Php-fpm..."
 
-exec /usr/sbin/php-fpm7 -F
+exec /usr/sbin/php-fpm -F
