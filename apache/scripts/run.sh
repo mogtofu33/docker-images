@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Common commands for permissions fix.
-/scripts/init.sh
+/scripts/fix_permissions.sh
 
 # Generate ssl certificate if needed.
 if [ "$GENERATE_APACHE_CERTIFICATE" != "" ]; then

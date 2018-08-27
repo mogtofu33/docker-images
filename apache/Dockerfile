@@ -17,8 +17,15 @@ RUN apk add --update --no-cache \
     apache2-icons \
     apache2-ldap \
     apache2-proxy \
+    apache2-proxy-html \
     apache2-ssl \
-    apache-mod-fcgid
+    apache2-ctl \
+    apache2-doc \
+    apache-mod-fcgid \
+    libxml2-dev
+
+# Fix proxy error by disabling config.
+RUN mv /etc/apache2/conf.d/proxy.conf /etc/apache2/conf.d/proxy.conf.dis
 
 # Copy root bashrc config for Apache user when running cmd.
 RUN cp /root/.bashrc /var/www/.bashrc && \
