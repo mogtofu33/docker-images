@@ -35,7 +35,7 @@ build:
 	$(call php_build,7.1)
 	$(call php_build,7.2)
 
-test: clean build test_base_3_7 test_base_3_8 test_php_5 test_php_7_1 test_php_7_2
+test: clean-containers build test_base_3_7 test_base_3_8 test_php_5 test_php_7_1 test_php_7_2
 
 test_base_3_7:
 	$(call docker_build,base_3_7,./alpine-base/3.7)
@@ -52,16 +52,22 @@ test_php_7_1:
 test_php_7_2:
 	$(call docker_build_run,test_php_7_2,./php/7.2,php -v)
 
-clean:
+clean: clean-files clean-containers
+
+clean-files:
 	# clean base images.
 	@rm -rf ./alpine-base/3.7;
 	@rm -rf ./alpine-base/3.8;
-	$(call docker_clean,base_3_7)
-	$(call docker_clean,base_3_8)
 	# clean php images.
 	@rm -rf ./php/5.6/scripts;
 	@rm -rf ./php/7.1/scripts;
 	@rm -rf ./php/7.2/scripts;
+
+clean-containers:
+	# clean base.
+	$(call docker_clean,base_3_7)
+	$(call docker_clean,base_3_8)
+	# clean php.
 	$(call docker_clean,test_php_5)
 	$(call docker_clean,test_php_7_1)
 	$(call docker_clean,test_php_7_2)

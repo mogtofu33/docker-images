@@ -9,7 +9,7 @@
 ### Php 7.1.17
 * [Alpine packages Php 7.1](https://pkgs.alpinelinux.org/packages?name=php7*&branch=v3.7&arch=x86_64)
 
-### Php 7.2.8
+### Php 7.2.10
 * [Alpine packages Php 7.2](https://pkgs.alpinelinux.org/packages?name=php7*&branch=v3.8&arch=x86_64)
 
 Script file _run.sh_ is common but need to be inside the Dockerfile folder for building.

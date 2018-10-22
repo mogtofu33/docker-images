@@ -107,7 +107,8 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 RUN /usr/bin/composer global require "hirak/prestissimo:^0.3" "drupal/coder"
 
 RUN ln -s /root/.composer/ /composer \
-    && /composer/vendor/bin/phpcs --config-set installed_paths  /composer/vendor/drupal/coder/coder_sniffer
+    && ln -s /root/.composer/ /.composer \
+    && /composer/vendor/bin/phpcs --config-set installed_paths /composer/vendor/drupal/coder/coder_sniffer
 
 # Fix composer cache folder permission to run composer as apache user.
 RUN chown apache:www-data /usr/bin/composer \
