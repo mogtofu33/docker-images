@@ -23,7 +23,8 @@ RUN apk add --update --no-cache \
     tzdata \
     rsync \
     openssh \
-    openssl
+    openssl \
+    ca-certificates
 
 # Set timezone.
 RUN cp /usr/share/zoneinfo/Pacific/Auckland /etc/localtime && \

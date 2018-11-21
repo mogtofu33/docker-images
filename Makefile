@@ -79,4 +79,4 @@ clean-images:
 	-docker rmi test_php_7_1;
 	-docker rmi test_php_7_2;
 
-.PHONY: build test clean clean-images
+.PHONY: build test clean

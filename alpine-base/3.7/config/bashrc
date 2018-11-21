@@ -1,6 +1,3 @@
-# Aliases
-alias apk='apk --progress'  # apk: show progress bar
-
 # Shell Options
 shopt -s checkwinsize
 

@@ -1,0 +1,63 @@
+image: docker:stable
+services:
+  - docker:dind
+
+stages:
+  - build
+  # - test
+  # - release
+  # - deploy
+
+variables:
+  DOCKER_HOST: tcp://docker:2375
+  DOCKER_DRIVER: overlay2
+  CONTAINER_TEST_IMAGE: registry.gitlab.com/mog33/docker-images
+  CONTAINER_RELEASE_IMAGE: index.docker.io/mogtofu33
+
+before_script:
+  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
+
+build:
+  stage: build
+  script:
+    - make build
+    - docker build --pull -t $CONTAINER_TEST_IMAGE/alpine-base-3-7:$CI_COMMIT_REF_SLUG alpine-base/3.7
+    - docker push $CONTAINER_TEST_IMAGE/alpine-base-3-7
+    - docker build --pull -t $CONTAINER_TEST_IMAGE/alpine-base-3-8:$CI_COMMIT_REF_SLUG alpine-base/3.8
+    - docker push $CONTAINER_TEST_IMAGE/alpine-base-3-8
+    - docker build --pull -t $CONTAINER_TEST_IMAGE/apache:$CI_COMMIT_REF_SLUG apache
+    - docker push $CONTAINER_TEST_IMAGE/apache
+    - docker build --pull -t $CONTAINER_TEST_IMAGE/php-5-6:$CI_COMMIT_REF_SLUG php/5.6
+    - docker push $CONTAINER_TEST_IMAGE/php-5-6
+    - docker build --pull -t $CONTAINER_TEST_IMAGE/php-7-1:$CI_COMMIT_REF_SLUG php/7.1
+    - docker push $CONTAINER_TEST_IMAGE/php-7-1
+    - docker build --pull -t $CONTAINER_TEST_IMAGE/php-7-2:$CI_COMMIT_REF_SLUG php/7.2
+    - docker push $CONTAINER_TEST_IMAGE/php-7-2
+  
+# test1:
+#   stage: test
+#   script:
+#     - docker pull $CONTAINER_TEST_IMAGE
+#     - docker run $CONTAINER_TEST_IMAGE /script/to/run/tests
+
+# test2:
+#   stage: test
+#   script:
+#     - docker pull $CONTAINER_TEST_IMAGE
+#     - docker run $CONTAINER_TEST_IMAGE /script/to/run/another/test
+
+# release-image:
+#   stage: release
+#   script:
+#     - docker pull $CONTAINER_TEST_IMAGE
+#     - docker tag $CONTAINER_TEST_IMAGE $CONTAINER_RELEASE_IMAGE
+#     - docker push $CONTAINER_RELEASE_IMAGE
+#   only:
+#     - master
+
+# deploy:
+#   stage: deploy
+#   script:
+#     - ./deploy.sh
+#   only:
+#     - master
