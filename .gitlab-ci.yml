@@ -37,7 +37,8 @@ build:base:
     - docker push $CONTAINER_TEST_IMAGE/alpine-base:3.8
     - docker push $CONTAINER_TEST_IMAGE/alpine-base:latest
   only:
-    - branches
+    - master
+    - testing
     - apache
     - php
 
@@ -50,7 +51,8 @@ test:base:
     - docker pull $CONTAINER_TEST_IMAGE/alpine-base:3.8
     - docker run $CONTAINER_TEST_IMAGE/alpine-base:3.8 sh -c 'useradd -U test && /scripts/change_uid_gid.sh test:test 1001:1001'
   only:
-    - branches
+    - master
+    - testing
     - apache
     - php
 
@@ -63,7 +65,8 @@ build:apache:
     - docker build --pull --tag $CONTAINER_TEST_IMAGE/apache:latest apache
     - docker push $CONTAINER_TEST_IMAGE/apache:latest
   only:
-    - branches
+    - master
+    - testing
     - apache
 
 build:php5:
@@ -75,7 +78,8 @@ build:php5:
     - docker build --pull --tag $CONTAINER_TEST_IMAGE/php:5 php/5.6
     - docker push $CONTAINER_TEST_IMAGE/php:5
   only:
-    - branches
+    - master
+    - testing
     - php
 
 build:php7:
@@ -97,7 +101,8 @@ build:php7:
     - docker push $CONTAINER_TEST_IMAGE/php:7.2
     - docker push $CONTAINER_TEST_IMAGE/php:latest
   only:
-    - branches
+    - master
+    - testing
     - php
 
 test:apache:
@@ -108,7 +113,8 @@ test:apache:
     - docker run -d -t --name apache $CONTAINER_TEST_IMAGE/apache:latest
     - docker exec apache curl -s -I http://localhost
   only:
-    - branches
+    - master
+    - testing
     - apache
 
 test:php5:
@@ -119,7 +125,8 @@ test:php5:
     - docker run -d -t --name php_5 $CONTAINER_TEST_IMAGE/php:5
     - docker exec php_5 php -v
   only:
-    - branches
+    - master
+    - testing
     - php
 
 test:php7:
@@ -133,7 +140,8 @@ test:php7:
     - docker run -d -t --name php_72 $CONTAINER_TEST_IMAGE/php:7.2
     - docker exec php_72 php -v
   only:
-    - branches
+    - master
+    - testing
     - php
 
 release-image:
