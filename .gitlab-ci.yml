@@ -111,7 +111,7 @@ test:apache:
     - *build_tools
     - docker pull $CONTAINER_TEST_IMAGE/apache:latest
     - docker run -d -t --name apache $CONTAINER_TEST_IMAGE/apache:latest
-    - docker exec apache curl -s -I http://localhost
+    - docker exec apache curl -s -I -v 127.0.0.1
   only:
     - master
     - testing
