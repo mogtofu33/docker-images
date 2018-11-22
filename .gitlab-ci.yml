@@ -182,50 +182,50 @@ release:php:7.2:
   variables:
     IMAGE: php:7.2
 
-solr:5:
+solr5:
   <<: *build_image
   variables:
     IMAGE: solr:5
-    DIR: build/solr/5
+    DIR: solr/5
 
-test:solr:5:
+test:solr5:
   <<: *test_solr
   variables:
     IMAGE: solr:5
 
-release:solr:5:
+release:solr5:
   <<: *release
   variables:
     IMAGE: solr:5
 
-solr:6:
+solr6:
   <<: *build_image
   variables:
     IMAGE: solr:6
-    DIR: build/solr/6
+    DIR: solr/6
 
-test:solr:6:
+test:solr6:
   <<: *test_solr
   variables:
     IMAGE: solr:6
 
-release:solr:6:
+release:solr6:
   <<: *release
   variables:
     IMAGE: solr:6
 
-solr:7:
+solr7:
   <<: *build_image
   variables:
     IMAGE: solr:7
-    DIR: build/solr/7
+    DIR: solr/7
 
-test:solr:7:
+test:solr7:
   <<: *test_solr
   variables:
     IMAGE: solr:7
 
-release:solr:7:
+release:solr7:
   <<: *release
   variables:
     IMAGE: solr:7
