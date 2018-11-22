@@ -12,127 +12,148 @@ stages:
 variables:
   DOCKER_HOST: tcp://docker:2375
   DOCKER_DRIVER: overlay2
-  CONTAINER_TEST_IMAGE: registry.gitlab.com/mog33/docker-images
-  CONTAINER_RELEASE_USER: mogtofu33
-  CONTAINER_RELEASE_REGISTRY: docker.io
-  CONTAINER_RELEASE_IMAGE: index.docker.io/mogtofu33
+  TEST_IMAGE: registry.gitlab.com/mog33/docker-images
+  RELEASE_USER: mogtofu33
+  RELEASE_REGISTRY: docker.io
+  RELEASE_IMAGE: index.docker.io/mogtofu33
 
-.build_tools:
-  - &build_tools
-    apk --no-cache add make gettext && make build
+.docker_login: &docker_login
+  before_script:
+    - docker login -u $RELEASE_USER -p $RELEASE_PASSWORD $RELEASE_REGISTRY
 
-.gitlab_registry:
-  - &gitlab_registry
-    sed 
+.login:
+  - &login docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
+
+.docker_build_push:
+  script: &docker_build_push
+    - docker build --pull --tag $TEST_IMAGE/$IMAGE $IMAGE
+    - docker push $TEST_IMAGE/$IMAGE
+
+.build_push: &build_push
+  stage: build
+  script: *docker_build_push
+
+.test_base: &test_base
+  stage: test
+  before_script:
+    - *login
+    - docker pull $TEST_IMAGE/$IMAGE
+  script:
+    - docker run $TEST_IMAGE/$IMAGE
+      sh -c 'useradd -U test && /scripts/change_uid_gid.sh test:test 1001:1001'
+
+.make:
+  - &make apk --no-cache add make gettext && make build
+
+.build_image: &build_image
+  stage: build images
+  before_script:
+    - *login
+    - *make
+    - sed -i 's#FROM ${RELEASE_USER}#FROM ${TEST_IMAGE}#g' ${DIR}/Dockerfile
+  script: *docker_build_push
+
+.test_images: &test_images
+  stage: test images
+  before_script:
+    - *login
+    - docker pull $TEST_IMAGE/$IMAGE
+    - docker run -d -t --name test $TEST_IMAGE/$IMAGE
+
+.release: &release
+  stage: release
+  <<: *docker_login
+  script:
+    - docker pull $TEST_IMAGE/$IMAGE
+    - docker tag $TEST_IMAGE/$IMAGE $RELEASE_IMAGE/$IMAGE
+    - docker push $RELEASE_IMAGE/$IMAGE
+  only:
+    - master
 
 before_script:
-  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
+  - *login
+  - *make
 
-build:base:
-  stage: build
-  script:
-    - *build_tools
-    - docker build --pull --tag $CONTAINER_TEST_IMAGE/alpine-base:3.7 alpine-base/3.7
-    - docker push $CONTAINER_TEST_IMAGE/alpine-base:3.7
-    - docker build --pull --cache-from $CONTAINER_TEST_IMAGE/alpine-base:latest
-      --tag $CONTAINER_TEST_IMAGE/alpine-base:3.8
-      --tag $CONTAINER_TEST_IMAGE/alpine-base:latest
-      alpine-base/3.8
-    - docker push $CONTAINER_TEST_IMAGE/alpine-base:3.8
-    - docker push $CONTAINER_TEST_IMAGE/alpine-base:latest
-  only:
-    - master
-    - testing
-    - apache
-    - php
+base:3.7:
+  <<: *build_push
+  variables:
+    IMAGE: alpine-base/3.7
 
-test:base:
-  stage: test
-  script:
-    - *build_tools
-    - docker pull $CONTAINER_TEST_IMAGE/alpine-base:3.7
-    - docker run $CONTAINER_TEST_IMAGE/alpine-base:3.7 sh -c 'useradd -U test && /scripts/change_uid_gid.sh test:test 1001:1001'
-    - docker pull $CONTAINER_TEST_IMAGE/alpine-base:3.8
-    - docker run $CONTAINER_TEST_IMAGE/alpine-base:3.8 sh -c 'useradd -U test && /scripts/change_uid_gid.sh test:test 1001:1001'
-  only:
-    - master
-    - testing
-    - apache
-    - php
+base:3.8:
+  <<: *build_push
+  variables:
+    IMAGE: alpine-base/3.8
 
-build:apache:
-  stage: build images
-  dependencies:
-    - build:base
-  script:
-    - *build_tools
-    - sed -i 's#FROM ${CONTAINER_RELEASE_USER}#FROM ${CONTAINER_TEST_IMAGE}#g' apache/Dockerfile
-    - docker build --pull --tag $CONTAINER_TEST_IMAGE/apache:latest apache
-    - docker push $CONTAINER_TEST_IMAGE/apache:latest
-  only:
-    - master
-    - testing
-    - apache
+test:3.7:
+  <<: *test_base
+  variables:
+    IMAGE: alpine-base/3.7
 
-build:php7:
-  stage: build images
-  dependencies:
-    - build:base
-  script:
-    - *build_tools
-    - sed -i 's#FROM ${CONTAINER_RELEASE_USER}#FROM ${CONTAINER_TEST_IMAGE}#g' php/7.1/Dockerfile
-    - docker build --pull --cache-from $CONTAINER_TEST_IMAGE/php:7
-        --tag $CONTAINER_TEST_IMAGE/php:7
-        --tag $CONTAINER_TEST_IMAGE/php:7.1
-        php/7.1
-    - docker push $CONTAINER_TEST_IMAGE/php:7
-    - docker push $CONTAINER_TEST_IMAGE/php:7.1
-    - sed -i 's#FROM ${CONTAINER_RELEASE_USER}#FROM ${CONTAINER_TEST_IMAGE}#g' php/7.2/Dockerfile
-    - docker build --pull --cache-from $CONTAINER_TEST_IMAGE/php:latest
-      --tag $CONTAINER_TEST_IMAGE/php:7.2
-      --tag $CONTAINER_TEST_IMAGE/php:latest
-      php/7.2
-    - docker push $CONTAINER_TEST_IMAGE/php:7.2
-    - docker push $CONTAINER_TEST_IMAGE/php:latest
-  only:
-    - master
-    - testing
-    - php
+test:3.8:
+  <<: *test_base
+  variables:
+    IMAGE: alpine-base/3.8
+
+apache:
+  <<: *build_image
+  variables:
+    IMAGE: apache:latest
+    DIR: apache
+
+php7.1:
+  <<: *build_image
+  variables:
+    IMAGE: php:7.1
+    DIR: php/7.1
+
+php7.2:
+  <<: *build_image
+  variables:
+    IMAGE: php:7.2
+    DIR: php/7.2
 
 test:apache:
-  stage: test images
+  <<: *test_images
   script:
-    - *build_tools
-    - docker pull $CONTAINER_TEST_IMAGE/apache:latest
-    - docker run -d -t --name apache $CONTAINER_TEST_IMAGE/apache:latest
-    - docker exec apache httpd -t -D DUMP_RUN_CFG
-  only:
-    - master
-    - testing
-    - apache
+    - docker exec test httpd -t -D DUMP_RUN_CFG
+  variables:
+    IMAGE: apache:latest
 
-test:php7:
-  stage: test images
+test:php7.1:
+  <<: *test_images
   script:
-    - *build_tools
-    - docker pull $CONTAINER_TEST_IMAGE/php:7.1
-    - docker run -d -t --name php_71 $CONTAINER_TEST_IMAGE/php:7.1
-    - docker exec php_71 php -v
-    - docker pull $CONTAINER_TEST_IMAGE/php:7.2
-    - docker run -d -t --name php_72 $CONTAINER_TEST_IMAGE/php:7.2
-    - docker exec php_72 php -v
-  only:
-    - master
-    - testing
-    - php
+    - docker exec test php -v
+  variables:
+    IMAGE: php:7.1
 
-release-image:
-  stage: release
-  before_script:
-    - docker login -u $CONTAINER_RELEASE_USER -p $CONTAINER_RELEASE_PASSWORD $CONTAINER_RELEASE_REGISTRY
+test:php7.2:
+  <<: *test_images
   script:
-    - docker pull $CONTAINER_TEST_IMAGE/alpine-base:3.7
-    - docker tag $CONTAINER_TEST_IMAGE/alpine-base:3.7 $CONTAINER_RELEASE_IMAGE/alpine-base:3.7
-    - docker push $CONTAINER_RELEASE_IMAGE/alpine-base:3.7
-  only:
-    - master
+    - docker exec test php -v
+  variables:
+    IMAGE: php:7.2
+
+release:base:3.7:
+  <<: *release
+  variables:
+    IMAGE: alpine-base:3.7
+
+release:base:3.8:
+  <<: *release
+  variables:
+    IMAGE: alpine-base:3.8
+
+release:apache:
+  <<: *release
+  variables:
+    IMAGE: apache:latest
+
+release:php:7.1:
+  <<: *release
+  variables:
+    IMAGE: php:7.1
+
+release:php:7.2:
+  <<: *release
+  variables:
+    IMAGE: php:7.2
