@@ -1,0 +1,6 @@
+alpine-base/3.*
+php/*/scripts
+solr/*/Dockerfile
+solr/*/config/core.properties
+solr/*/config/conf/lang
+solr/*/config/conf/*.txt

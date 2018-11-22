@@ -87,6 +87,7 @@ RUN echo "@php https://php.codecasts.rocks/v3.7/php-7.1" >> /etc/apk/repositorie
     php7-redis@php \
     php7-zlib@php \
     php7-libsodium@php \
+    php7-fileinfo \
     php7-oauth \
     php7-zmq
 
