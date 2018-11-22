@@ -1,4 +1,5 @@
 image: docker:stable
+
 services:
   - docker:dind
 
@@ -13,9 +14,13 @@ variables:
   DOCKER_HOST: tcp://docker:2375
   DOCKER_DRIVER: overlay2
   TEST_IMAGE: registry.gitlab.com/mog33/docker-images
-  RELEASE_USER: mogtofu33
   RELEASE_REGISTRY: docker.io
-  RELEASE_IMAGE: index.docker.io/mogtofu33
+  RELEASE_IMAGE: index.docker.io/$RELEASE_USER
+
+################################################################################
+# Templates to avoid repeat.
+# https://docs.gitlab.com/ee/ci/yaml/#anchors
+################################################################################
 
 .docker_login: &docker_login
   before_script:
@@ -26,7 +31,7 @@ variables:
 
 .docker_build_push:
   script: &docker_build_push
-    - docker build --pull --tag $TEST_IMAGE/$IMAGE $IMAGE
+    - docker build --pull --tag $TEST_IMAGE/$IMAGE $DIR
     - docker push $TEST_IMAGE/$IMAGE
 
 .build_push: &build_push
@@ -60,6 +65,11 @@ variables:
     - docker pull $TEST_IMAGE/$IMAGE
     - docker run -d -t --name test $TEST_IMAGE/$IMAGE
 
+.test_images_php: &test_images_php
+  <<: *test_images
+  script:
+    - docker exec test php -v
+
 .release: &release
   stage: release
   <<: *docker_login
@@ -70,6 +80,10 @@ variables:
   only:
     - master
 
+################################################################################
+# Jobs based on previous templates.
+################################################################################
+
 before_script:
   - *login
   - *make
@@ -77,22 +91,24 @@ before_script:
 base:3.7:
   <<: *build_push
   variables:
-    IMAGE: alpine-base/3.7
+    IMAGE: alpine-base:3.7
+    DIR: alpine-base/3.7
 
 base:3.8:
   <<: *build_push
   variables:
-    IMAGE: alpine-base/3.8
+    IMAGE: alpine-base:3.8
+    DIR: alpine-base/3.8
 
 test:3.7:
   <<: *test_base
   variables:
-    IMAGE: alpine-base/3.7
+    IMAGE: alpine-base:3.7
 
 test:3.8:
   <<: *test_base
   variables:
-    IMAGE: alpine-base/3.8
+    IMAGE: alpine-base:3.8
 
 apache:
   <<: *build_image
@@ -120,16 +136,12 @@ test:apache:
     IMAGE: apache:latest
 
 test:php7.1:
-  <<: *test_images
-  script:
-    - docker exec test php -v
+  <<: *test_images_php
   variables:
     IMAGE: php:7.1
 
 test:php7.2:
-  <<: *test_images
-  script:
-    - docker exec test php -v
+  <<: *test_images_php
   variables:
     IMAGE: php:7.2
 
