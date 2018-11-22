@@ -186,7 +186,7 @@ solr:5:
   <<: *build_image
   variables:
     IMAGE: solr:5
-    DIR: build/solr-5
+    DIR: build/solr/5
 
 test:solr:5:
   <<: *test_solr
@@ -202,7 +202,7 @@ solr:6:
   <<: *build_image
   variables:
     IMAGE: solr:6
-    DIR: build/solr-6
+    DIR: build/solr/6
 
 test:solr:6:
   <<: *test_solr
@@ -218,7 +218,7 @@ solr:7:
   <<: *build_image
   variables:
     IMAGE: solr:7
-    DIR: build/solr-7
+    DIR: build/solr/7
 
 test:solr:7:
   <<: *test_solr
