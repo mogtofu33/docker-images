@@ -16,6 +16,7 @@ variables:
   TEST_IMAGE: registry.gitlab.com/mog33/docker-images
   RELEASE_REGISTRY: docker.io
   RELEASE_IMAGE: index.docker.io/$RELEASE_USER
+  SOLR_CORE: "d8"
 
 ################################################################################
 # Templates to avoid repeat. A bit Xtrem here!
@@ -70,8 +71,16 @@ variables:
     - docker exec test php -v
 
 .test_apache: &test_apache
+  <<: *test_images
   script:
     - docker exec test httpd -t -D DUMP_RUN_CFG
+
+.test_solr: &test_solr
+  <<: *test_images
+  script:
+    - docker exec --user=solr test ls -lAh /opt/solr/server/solr/mycores/
+    - docker exec --user=solr test ls -lAh /opt/solr/server/solr/mycores/d8
+    #- docker exec --user=solr test wget -q -O - "http://localhost:8983/solr/${SOLR_CORE}/admin/ping?wt=json"
 
 .release: &release
   stage: release
@@ -99,19 +108,29 @@ base:3.7:
     IMAGE: alpine-base:3.7
     DIR: alpine-base/3.7
 
+test:3.7:
+  <<: *test_base
+  variables:
+    IMAGE: alpine-base:3.7
+
+release:base:3.7:
+  <<: *release
+  variables:
+    IMAGE: alpine-base:3.7
+
 base:3.8:
   <<: *build_push
   variables:
     IMAGE: alpine-base:3.8
     DIR: alpine-base/3.8
 
-test:3.7:
-  <<: *test_base
-  variables:
-    IMAGE: alpine-base:3.7
-
 test:3.8:
   <<: *test_base
+  variables:
+    IMAGE: alpine-base:3.8
+
+release:base:3.8:
+  <<: *release
   variables:
     IMAGE: alpine-base:3.8
 
@@ -121,11 +140,31 @@ apache:
     IMAGE: apache:latest
     DIR: apache
 
+test:apache:
+  <<: *test_apache
+  variables:
+    IMAGE: apache:latest
+
+release:apache:
+  <<: *release
+  variables:
+    IMAGE: apache:latest
+
 php7.1:
   <<: *build_image
   variables:
     IMAGE: php:7.1
     DIR: php/7.1
+
+test:php7.1:
+  <<: *test_images_php
+  variables:
+    IMAGE: php:7.1
+
+release:php:7.1:
+  <<: *release
+  variables:
+    IMAGE: php:7.1
 
 php7.2:
   <<: *build_image
@@ -133,43 +172,60 @@ php7.2:
     IMAGE: php:7.2
     DIR: php/7.2
 
-test:apache:
-  <<: *test_images
-  <<: *test_apache
-  variables:
-    IMAGE: apache:latest
-
-test:php7.1:
-  <<: *test_images_php
-  variables:
-    IMAGE: php:7.1
-
 test:php7.2:
   <<: *test_images_php
   variables:
     IMAGE: php:7.2
 
-release:base:3.7:
-  <<: *release
-  variables:
-    IMAGE: alpine-base:3.7
-
-release:base:3.8:
-  <<: *release
-  variables:
-    IMAGE: alpine-base:3.8
-
-release:apache:
-  <<: *release
-  variables:
-    IMAGE: apache:latest
-
-release:php:7.1:
-  <<: *release
-  variables:
-    IMAGE: php:7.1
-
 release:php:7.2:
   <<: *release
   variables:
     IMAGE: php:7.2
+
+solr:5:
+  <<: *build_image
+  variables:
+    IMAGE: solr:5
+    DIR: build/solr-5
+
+test:solr:5:
+  <<: *test_solr
+  variables:
+    IMAGE: solr:5
+
+release:solr:5:
+  <<: *release
+  variables:
+    IMAGE: solr:5
+
+solr:6:
+  <<: *build_image
+  variables:
+    IMAGE: solr:6
+    DIR: build/solr-6
+
+test:solr:6:
+  <<: *test_solr
+  variables:
+    IMAGE: solr:6
+
+release:solr:6:
+  <<: *release
+  variables:
+    IMAGE: solr:6
+
+solr:7:
+  <<: *build_image
+  variables:
+    IMAGE: solr:7
+    DIR: build/solr-7
+
+test:solr:7:
+  <<: *test_solr
+  variables:
+    IMAGE: solr:7
+
+release:solr:7:
+  <<: *release
+  variables:
+    IMAGE: solr:7
