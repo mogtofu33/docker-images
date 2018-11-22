@@ -13,21 +13,17 @@ stages:
 variables:
   DOCKER_HOST: tcp://docker:2375
   DOCKER_DRIVER: overlay2
-  TEST_IMAGE: registry.gitlab.com/mog33/docker-images
+  TEST_IMAGE: registry.gitlab.com/mog33
   RELEASE_REGISTRY: docker.io
   RELEASE_IMAGE: index.docker.io/$RELEASE_USER
 
 ################################################################################
-# Templates to avoid repeat.
+# Templates to avoid repeat. A bit Xtrem here!
 # https://docs.gitlab.com/ee/ci/yaml/#anchors
 ################################################################################
 
-.docker_login: &docker_login
-  before_script:
-    - docker login -u $RELEASE_USER -p $RELEASE_PASSWORD $RELEASE_REGISTRY
-
-.login:
-  - &login docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
+.docker_login_gitlab:
+  - &docker_login_gitlab docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
 
 .docker_build_push:
   script: &docker_build_push
@@ -38,31 +34,34 @@ variables:
   stage: build
   script: *docker_build_push
 
+.docker_pull:
+  - &docker_pull docker pull $TEST_IMAGE/$IMAGE
+
 .test_base: &test_base
   stage: test
   before_script:
-    - *login
-    - docker pull $TEST_IMAGE/$IMAGE
+    - *docker_login_gitlab
+    - *docker_pull
   script:
     - docker run $TEST_IMAGE/$IMAGE
       sh -c 'useradd -U test && /scripts/change_uid_gid.sh test:test 1001:1001'
 
-.make:
-  - &make apk --no-cache add make gettext && make build
+.make_build:
+  - &make_build apk --no-cache add make gettext && make build
 
 .build_image: &build_image
   stage: build images
   before_script:
-    - *login
-    - *make
+    - *docker_login_gitlab
+    - *make_build
     - sed -i 's#FROM ${RELEASE_USER}#FROM ${TEST_IMAGE}#g' ${DIR}/Dockerfile
   script: *docker_build_push
 
 .test_images: &test_images
   stage: test images
   before_script:
-    - *login
-    - docker pull $TEST_IMAGE/$IMAGE
+    - *docker_login_gitlab
+    - *docker_pull
     - docker run -d -t --name test $TEST_IMAGE/$IMAGE
 
 .test_images_php: &test_images_php
@@ -70,11 +69,16 @@ variables:
   script:
     - docker exec test php -v
 
+.test_apache: &test_apache
+  script:
+    - docker exec test httpd -t -D DUMP_RUN_CFG
+
 .release: &release
   stage: release
-  <<: *docker_login
+  before_script:
+    - docker login -u $RELEASE_USER -p $RELEASE_PASSWORD $RELEASE_REGISTRY
   script:
-    - docker pull $TEST_IMAGE/$IMAGE
+    - *docker_pull
     - docker tag $TEST_IMAGE/$IMAGE $RELEASE_IMAGE/$IMAGE
     - docker push $RELEASE_IMAGE/$IMAGE
   only:
@@ -82,11 +86,12 @@ variables:
 
 ################################################################################
 # Jobs based on previous templates.
+# Only variables need to be changed if needed.
 ################################################################################
 
 before_script:
-  - *login
-  - *make
+  - *docker_login_gitlab
+  - *make_build
 
 base:3.7:
   <<: *build_push
@@ -130,8 +135,7 @@ php7.2:
 
 test:apache:
   <<: *test_images
-  script:
-    - docker exec test httpd -t -D DUMP_RUN_CFG
+  <<: *test_apache
   variables:
     IMAGE: apache:latest
 
