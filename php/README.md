@@ -2,11 +2,6 @@
 
 ## Php modules and version based on Alpine Linux
 
-### Php 5.6.37
-
-* [Alpine packages Php 5](https://pkgs.alpinelinux.org/packages?name=php5*&branch=v3.8&arch=x86_64)
-  * Added xdebug, redis and memcached compiled.
-
 ### Php 7.1.21
 
 * [Codecasts Rocks Php 7.1.21](http://php.codecasts.rocks/v3.7/php-7.1/x86_64)

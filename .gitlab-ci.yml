@@ -21,6 +21,10 @@ variables:
   - &build_tools
     apk --no-cache add make gettext && make build
 
+.gitlab_registry:
+  - &gitlab_registry
+    sed 
+
 before_script:
   - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
 
@@ -62,6 +66,7 @@ build:apache:
     - build:base
   script:
     - *build_tools
+    - sed -i 's#FROM ${CONTAINER_RELEASE_USER}#FROM ${CONTAINER_TEST_IMAGE}#g' apache/Dockerfile
     - docker build --pull --tag $CONTAINER_TEST_IMAGE/apache:latest apache
     - docker push $CONTAINER_TEST_IMAGE/apache:latest
   only:
@@ -69,31 +74,20 @@ build:apache:
     - testing
     - apache
 
-build:php5:
-  stage: build images
-  dependencies:
-    - build:base
-  script:
-    - *build_tools
-    - docker build --pull --tag $CONTAINER_TEST_IMAGE/php:5 php/5.6
-    - docker push $CONTAINER_TEST_IMAGE/php:5
-  only:
-    - master
-    - testing
-    - php
-
 build:php7:
   stage: build images
   dependencies:
     - build:base
   script:
     - *build_tools
+    - sed -i 's#FROM ${CONTAINER_RELEASE_USER}#FROM ${CONTAINER_TEST_IMAGE}#g' php/7.1/Dockerfile
     - docker build --pull --cache-from $CONTAINER_TEST_IMAGE/php:7
         --tag $CONTAINER_TEST_IMAGE/php:7
         --tag $CONTAINER_TEST_IMAGE/php:7.1
         php/7.1
     - docker push $CONTAINER_TEST_IMAGE/php:7
     - docker push $CONTAINER_TEST_IMAGE/php:7.1
+    - sed -i 's#FROM ${CONTAINER_RELEASE_USER}#FROM ${CONTAINER_TEST_IMAGE}#g' php/7.2/Dockerfile
     - docker build --pull --cache-from $CONTAINER_TEST_IMAGE/php:latest
       --tag $CONTAINER_TEST_IMAGE/php:7.2
       --tag $CONTAINER_TEST_IMAGE/php:latest
@@ -116,18 +110,6 @@ test:apache:
     - master
     - testing
     - apache
-
-test:php5:
-  stage: test images
-  script:
-    - *build_tools
-    - docker pull $CONTAINER_TEST_IMAGE/php:5
-    - docker run -d -t --name php_5 $CONTAINER_TEST_IMAGE/php:5
-    - docker exec php_5 php -v
-  only:
-    - master
-    - testing
-    - php
 
 test:php7:
   stage: test images

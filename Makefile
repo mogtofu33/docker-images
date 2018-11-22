@@ -31,20 +31,16 @@ build:
 	$(call base_build,3.7)
 	$(call base_build,3.8)
 	# build php images.
-	$(call php_build,5.6)
 	$(call php_build,7.1)
 	$(call php_build,7.2)
 
-test: clean-containers build test_base_3_7 test_base_3_8 test_php_5 test_php_7_1 test_php_7_2
+test: clean-containers build test_base_3_7 test_base_3_8 test_php_7_1 test_php_7_2
 
 test_base_3_7:
 	$(call docker_build,base_3_7,./alpine-base/3.7)
 
 test_base_3_8:
 	$(call docker_build,base_3_8,./alpine-base/3.8)
-
-test_php_5:
-	$(call docker_build_run,test_php_5,./php/5.6,php -v)
 
 test_php_7_1:
 	$(call docker_build_run,test_php_7_1,./php/7.1,php -v)
@@ -59,7 +55,6 @@ clean-files:
 	@rm -rf ./alpine-base/3.7;
 	@rm -rf ./alpine-base/3.8;
 	# clean php images.
-	@rm -rf ./php/5.6/scripts;
 	@rm -rf ./php/7.1/scripts;
 	@rm -rf ./php/7.2/scripts;
 
@@ -68,14 +63,12 @@ clean-containers:
 	$(call docker_clean,base_3_7)
 	$(call docker_clean,base_3_8)
 	# clean php.
-	$(call docker_clean,test_php_5)
 	$(call docker_clean,test_php_7_1)
 	$(call docker_clean,test_php_7_2)
 
 clean-images:
 	-docker rmi base_3_7;
 	-docker rmi base_3_8;
-	-docker rmi test_php_5;
 	-docker rmi test_php_7_1;
 	-docker rmi test_php_7_2;
 
