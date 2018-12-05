@@ -243,7 +243,7 @@ drupal8ci:
     - *docker_login_gitlab
   variables:
     IMAGE: drupal8ci:8.6
-    DIR: solr/7
+    DIR: drupal8ci/8.6
 
 test:drupal8ci:
   <<: *test_drupal8ci
