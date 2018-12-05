@@ -82,6 +82,11 @@ variables:
     - docker exec --user=solr test ls -lAh /opt/solr/server/solr/mycores/d8
     #- docker exec --user=solr test wget -q -O - "http://localhost:8983/solr/${SOLR_CORE}/admin/ping?wt=json"
 
+.test_drupal8ci: &test_drupal8ci
+  <<: *test_images
+  script:
+    - docker exec test 'php -v && a2query -s 000-default && robo -V'
+
 .release: &release
   stage: release
   before_script:
@@ -229,3 +234,19 @@ release:solr7:
   <<: *release
   variables:
     IMAGE: solr:7
+
+drupal8ci:
+  <<: *build_image
+  variables:
+    IMAGE: drupal8ci:8.6
+    DIR: solr/7
+
+test:drupal8ci:
+  <<: *test_drupal8ci
+  variables:
+    IMAGE: drupal8ci:8.6
+
+release:drupal8ci:
+  <<: *release
+  variables:
+    IMAGE: drupal8ci:8.6

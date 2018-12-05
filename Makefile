@@ -77,6 +77,9 @@ test_solr_7: solr_build
 
 test_solr: solr_build test_solr_5 test_solr_6 test_solr_7
 
+test_drupal8ci_8_6:
+	$(call docker_build_run,test_drupal8ci_8_6,./drupal8ci/8.6,php -v && a2query -s 000-default && robo -V)
+
 clean: clean-files clean-containers
 
 clean-files:
@@ -101,6 +104,8 @@ clean-containers:
 	$(call docker_clean,test_solr_5)
 	$(call docker_clean,test_solr_6)
 	$(call docker_clean,test_solr_7)
+	# clean drupal8ci.
+	$(call docker_clean,test_drupal8ci_8_6)
 
 clean-images:
 	-docker rmi base_3_7;
@@ -110,5 +115,6 @@ clean-images:
 	-docker rmi test_solr_5;
 	-docker rmi test_solr_6;
 	-docker rmi test_solr_7;
+	-docker rmi test_drupal8ci_8_6;
 
 .PHONY: build test clean
