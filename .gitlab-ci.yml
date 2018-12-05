@@ -85,7 +85,9 @@ variables:
 .test_drupal8ci: &test_drupal8ci
   <<: *test_images
   script:
-    - docker exec test 'php -v && a2query -s 000-default && robo -V'
+    - docker exec test php -v
+    - docker exec test a2query -s 000-default
+    - docker exec test robo -V
 
 .release: &release
   stage: release
@@ -237,6 +239,8 @@ release:solr7:
 
 drupal8ci:
   <<: *build_image
+  before_script:
+    - *docker_login_gitlab
   variables:
     IMAGE: drupal8ci:8.6
     DIR: solr/7
