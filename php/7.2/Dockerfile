@@ -100,8 +100,6 @@ COPY ./scripts/run.sh /scripts/run.sh
 
 RUN ln -s /usr/sbin/php-fpm7 /usr/sbin/php-fpm \
     && ln -s /usr/bin/php7 /usr/bin/php \
-    # https://github.com/codecasts/php-alpine/issues/54#issuecomment-440594262
-    && mv /etc/php7/conf.d/00_mysqli.ini /etc/php7/conf.d/02_mysqli.ini \
     # Symlink for cache.
     && ln -s /root/.composer/ /composer \
     && ln -s /root/.composer/ /.composer \
