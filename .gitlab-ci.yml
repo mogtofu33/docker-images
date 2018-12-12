@@ -13,7 +13,6 @@ stages:
 variables:
   DOCKER_HOST: tcp://docker:2375
   DOCKER_DRIVER: overlay2
-  TEST_IMAGE: registry.gitlab.com/mog33/docker-images
   RELEASE_REGISTRY: docker.io
   RELEASE_IMAGE: index.docker.io/$RELEASE_USER
   SOLR_CORE: "d8"
@@ -28,15 +27,15 @@ variables:
 
 .docker_build_push:
   script: &docker_build_push
-    - docker build --pull --tag $TEST_IMAGE/$IMAGE $DIR
-    - docker push $TEST_IMAGE/$IMAGE
+    - docker build --pull --tag $CI_REGISTRY_IMAGE/$IMAGE $DIR
+    - docker push $CI_REGISTRY_IMAGE/$IMAGE
 
 .build_push: &build_push
   stage: build
   script: *docker_build_push
 
 .docker_pull:
-  - &docker_pull docker pull $TEST_IMAGE/$IMAGE
+  - &docker_pull docker pull $CI_REGISTRY_IMAGE/$IMAGE
 
 .test_base: &test_base
   stage: test
@@ -44,7 +43,7 @@ variables:
     - *docker_login_gitlab
     - *docker_pull
   script:
-    - docker run $TEST_IMAGE/$IMAGE
+    - docker run $CI_REGISTRY_IMAGE/$IMAGE
       sh -c 'useradd -U test && /scripts/change_uid_gid.sh test:test 1001:1001'
 
 .make_build:
@@ -55,7 +54,7 @@ variables:
   before_script:
     - *docker_login_gitlab
     - *make_build
-    - sed -i 's#FROM ${RELEASE_USER}#FROM ${TEST_IMAGE}#g' ${DIR}/Dockerfile
+    - sed -i 's#FROM ${RELEASE_USER}#FROM ${CI_REGISTRY_IMAGE}#g' ${DIR}/Dockerfile
   script: *docker_build_push
 
 .test_images: &test_images
@@ -63,7 +62,7 @@ variables:
   before_script:
     - *docker_login_gitlab
     - *docker_pull
-    - docker run -d -t --name test $TEST_IMAGE/$IMAGE
+    - docker run -d -t --name test $CI_REGISTRY_IMAGE/$IMAGE
 
 .test_images_php: &test_images_php
   <<: *test_images
@@ -88,7 +87,7 @@ variables:
     - docker login -u $RELEASE_USER -p $RELEASE_PASSWORD $RELEASE_REGISTRY
   script:
     - *docker_pull
-    - docker tag $TEST_IMAGE/$IMAGE $RELEASE_IMAGE/$IMAGE
+    - docker tag $CI_REGISTRY_IMAGE/$IMAGE $RELEASE_IMAGE/$IMAGE
     - docker push $RELEASE_IMAGE/$IMAGE
   only:
     - master
