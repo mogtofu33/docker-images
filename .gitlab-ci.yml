@@ -25,6 +25,9 @@ variables:
 .docker_login_gitlab:
   - &docker_login_gitlab docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
 
+.docker_pull:
+  - &docker_pull docker pull $CI_REGISTRY_IMAGE/$IMAGE || true
+
 .docker_build_push:
   script: &docker_build_push
     - *docker_pull
@@ -34,9 +37,6 @@ variables:
 .build_push: &build_push
   stage: build
   script: *docker_build_push
-
-.docker_pull:
-  - &docker_pull docker pull $CI_REGISTRY_IMAGE/$IMAGE
 
 .test_base: &test_base
   stage: test
