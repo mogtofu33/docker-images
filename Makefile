@@ -1,19 +1,25 @@
 # Makefile for Docker Compose Drupal images.
 
 define base_build
+	# Build base image $(1)
 	@mkdir -p ./alpine-base/$(1);
 	@TIMEZONE="Pacific/Auckland" ALPINE_VERSION="$(1)" envsubst < "./alpine-base/Dockerfile.tpl" > "./alpine-base/$(1)/Dockerfile";
 	@cp -r ./alpine-base/config/ ./alpine-base/$(1)/;
 	@cp -r ./alpine-base/scripts/ ./alpine-base/$(1)/;
+	# Done!
 endef
 
 define php_build
+	# Build php $(1)
 	@cp -r ./php/scripts/ ./php/$(1)/;
+	# Done!
 endef
 
 define solr_build
+	# Build solr $(1)
 	@SOLR_VERSION="$(1)" envsubst < "./solr/Dockerfile.tpl" > "./solr/$(1)/Dockerfile";
 	@cp -r ./solr/config/ ./solr/$(1)/;
+	# Done!
 endef
 
 define docker_build
@@ -31,17 +37,14 @@ define docker_clean
 endef
 
 base_build:
-	# build base image.
 	$(call base_build,3.7)
 	$(call base_build,3.8)
 
 php_build:
-	# build php images.
 	$(call php_build,7.1)
 	$(call php_build,7.2)
 
 solr_build:
-	# build solr images.
 	$(call solr_build,5)
 	$(call solr_build,6)
 	$(call solr_build,7)
