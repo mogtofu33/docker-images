@@ -27,7 +27,8 @@ variables:
 
 .docker_build_push:
   script: &docker_build_push
-    - docker build --pull --tag $CI_REGISTRY_IMAGE/$IMAGE $DIR
+    - *docker_pull
+    - docker build --compress --cache-from $RELEASE_IMAGE/$IMAGE --tag $CI_REGISTRY_IMAGE/$IMAGE $DIR
     - docker push $CI_REGISTRY_IMAGE/$IMAGE
 
 .build_push: &build_push

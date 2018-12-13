@@ -1,5 +1,7 @@
 FROM alpine:$ALPINE_VERSION
 
+LABEL maintainer="dev-drupal.com"
+
 # Configurable settings.
 ENV TIMEZONE        $TIMEZONE
 
