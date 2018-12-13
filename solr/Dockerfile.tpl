@@ -1,6 +1,6 @@
 FROM solr:$SOLR_VERSION-alpine
 
-LABEL maintainer="moimog33@gmail.com"
+LABEL maintainer="dev-drupal.com"
 
 ENV EXTRA_ACCESS="/solr/drupal"
 

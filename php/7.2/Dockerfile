@@ -1,5 +1,7 @@
 FROM mogtofu33/alpine-base:3.8
 
+LABEL maintainer="dev-drupal.com"
+
 # Set specific uid/gid to web server user to fix permissions issues.
 ENV LOCAL_UID=1000
 ENV LOCAL_GID=1000
@@ -100,8 +102,6 @@ COPY ./scripts/run.sh /scripts/run.sh
 
 RUN ln -s /usr/sbin/php-fpm7 /usr/sbin/php-fpm \
     && ln -s /usr/bin/php7 /usr/bin/php \
-    # https://github.com/codecasts/php-alpine/issues/54#issuecomment-440594262
-    && mv /etc/php7/conf.d/00_mysqli.ini /etc/php7/conf.d/02_mysqli.ini \
     # Symlink for cache.
     && ln -s /root/.composer/ /composer \
     && ln -s /root/.composer/ /.composer \
@@ -116,6 +116,7 @@ RUN ln -s /usr/sbin/php-fpm7 /usr/sbin/php-fpm \
     && chown apache:www-data /usr/bin/composer \
     && chown -R apache:www-data /composer/cache /var/www \
     # Clean.
+    && rm -rf ~/.composer/cache/* \
     && rm -rf /var/cache/apk/*
 
 # Phpfpm port.
