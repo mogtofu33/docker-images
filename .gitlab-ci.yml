@@ -6,6 +6,7 @@ services:
 stages:
   - build
   - test
+  - release base
   - build images
   - test images
   - release
@@ -115,6 +116,7 @@ test:3.9:
 
 release:base:3.9:
   <<: *release
+  stage: release base
   variables:
     IMAGE: alpine-base:3.9
 
