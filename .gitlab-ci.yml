@@ -118,7 +118,7 @@ release:base:3.9:
   <<: *release
   stage: release base
   only:
-    - branch
+    - branches
   variables:
     IMAGE: alpine-base:3.9
 
