@@ -17,77 +17,77 @@ RUN echo "@php https://php.codecasts.rocks/v3.9/php-7.3" >> /etc/apk/repositorie
     postgresql-client \
     # Php and third party.
     imagemagick \
-    php7@php \
-    php7-common@php \
-    php7-sysvsem@php \
-    php7-sysvshm@php \
-    php7-tidy@php \
-    php7-wddx@php \
-    php7-xml@php \
-    php7-xmlreader@php \
-    php7-xmlrpc@php \
-    php7-xsl@php \
-    php7-zip@php \
-    php7-phar@php \
-    php7-posix@php \
-    php7-pspell@php \
-    php7-session@php \
-    php7-shmop@php \
-    php7-snmp@php \
-    php7-soap@php \
-    php7-sockets@php \
-    php7-sqlite3@php \
-    php7-sysvmsg@php \
-    php7-mysqlnd@php \
-    php7-odbc@php \
-    php7-opcache@php \
-    php7-openssl@php \
-    php7-pcntl@php \
-    php7-pdo@php \
-    php7-pdo_dblib@php \
-    php7-pdo_mysql@php \
-    php7-pdo_pgsql@php \
-    php7-pdo_sqlite@php \
-    php7-pgsql@php \
-    php7-gettext@php \
-    php7-gmp@php \
-    php7-iconv@php \
-    php7-imap@php \
-    php7-intl@php \
-    php7-json@php \
-    php7-ldap@php \
-    php7-mbstring@php \
-    php7-mysqli@php \
-    php7-bcmath@php \
-    php7-bz2@php \
-    php7-calendar@php \
-    php7-ctype@php \
-    php7-curl@php \
-    php7-dba@php \
-    php7-dom@php \
-    php7-embed@php \
-    php7-enchant@php \
-    php7-exif@php \
-    php7-ftp@php \
-    php7-gd@php \
-    php7-pear@php \
-    php7-apache2@php \
-    php7-cgi@php \
-    php7-dev@php \
-    php7-doc@php \
-    php7-fpm@php \
-    php7-litespeed@php \
-    php7-phpdbg@php \
-    php7-amqp@php \
-    php7-apcu@php \
-    php7-memcached@php \
-    php7-imagick@php \
-    php7-psr@php \
-    php7-xdebug@php \
-    php7-redis@php \
-    php7-zlib@php \
-    php7-sodium@php \
-    php7-mcrypt@php
+    php@php \
+    php-common@php \
+    php-sysvsem@php \
+    php-sysvshm@php \
+    php-tidy@php \
+    php-wddx@php \
+    php-xml@php \
+    php-xmlreader@php \
+    php-xmlrpc@php \
+    php-xsl@php \
+    php-zip@php \
+    php-phar@php \
+    php-posix@php \
+    php-pspell@php \
+    php-session@php \
+    php-shmop@php \
+    php-snmp@php \
+    php-soap@php \
+    php-sockets@php \
+    php-sqlite3@php \
+    php-sysvmsg@php \
+    php-mysqlnd@php \
+    php-odbc@php \
+    php-opcache@php \
+    php-openssl@php \
+    php-pcntl@php \
+    php-pdo@php \
+    php-pdo_dblib@php \
+    php-pdo_mysql@php \
+    php-pdo_pgsql@php \
+    php-pdo_sqlite@php \
+    php-pgsql@php \
+    php-gettext@php \
+    php-gmp@php \
+    php-iconv@php \
+    php-imap@php \
+    php-intl@php \
+    php-json@php \
+    php-ldap@php \
+    php-mbstring@php \
+    php-mysqli@php \
+    php-bcmath@php \
+    php-bz2@php \
+    php-calendar@php \
+    php-ctype@php \
+    php-curl@php \
+    php-dba@php \
+    php-dom@php \
+    php-embed@php \
+    php-enchant@php \
+    php-exif@php \
+    php-ftp@php \
+    php-gd@php \
+    php-pear@php \
+    php-apache2@php \
+    php-cgi@php \
+    php-dev@php \
+    php-doc@php \
+    php-fpm@php \
+    php-litespeed@php \
+    php-phpdbg@php \
+    php-amqp@php \
+    php-apcu@php \
+    php-memcached@php \
+    php-imagick@php \
+    php-psr@php \
+    php-xdebug@php \
+    php-redis@php \
+    php-zlib@php \
+    php-sodium@php \
+    php-mcrypt@php
 
 # Install composer.
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -95,13 +95,8 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Copy Php fpm start script.
 COPY ./scripts/run.sh /scripts/run.sh
 
-RUN ln -s /usr/sbin/php-fpm7 /usr/sbin/php-fpm \
-    && ln -s /usr/bin/php7 /usr/bin/php \
-    # Symlink for cache.
-    && ln -s /root/.composer/ /composer \
-    && ln -s /root/.composer/ /.composer \
-    # Install prestissimo and php code sniffer with Drupal standards.
-    && /usr/bin/composer global require "hirak/prestissimo:^0.3" "drupal/coder" \
+# Install prestissimo and php code sniffer with Drupal standards.
+RUN /usr/bin/composer global require "hirak/prestissimo:^0.3" "drupal/coder" \
     && /composer/vendor/bin/phpcs --config-set installed_paths /composer/vendor/drupal/coder/coder_sniffer \
     # Fix composer cache folder permission to run composer as apache user.
     && chmod +x /usr/bin/composer \

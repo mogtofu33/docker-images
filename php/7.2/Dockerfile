@@ -99,12 +99,8 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Copy Php fpm start script.
 COPY ./scripts/run.sh /scripts/run.sh
 
-RUN ln -s /usr/sbin/php-fpm7 /usr/sbin/php-fpm \
-    # Symlink for cache.
-    && ln -s /root/.composer/ /composer \
-    && ln -s /root/.composer/ /.composer \
-    # Install prestissimo and php code sniffer with Drupal standards.
-    && /usr/bin/composer global require "hirak/prestissimo:^0.3" "drupal/coder" \
+# Install prestissimo and php code sniffer with Drupal standards.
+RUN /usr/bin/composer global require "hirak/prestissimo:^0.3" "drupal/coder" \
     && /composer/vendor/bin/phpcs --config-set installed_paths /composer/vendor/drupal/coder/coder_sniffer \
     # Fix composer cache folder permission to run composer as apache user.
     && chmod +x /usr/bin/composer \
