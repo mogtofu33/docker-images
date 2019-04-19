@@ -1,4 +1,4 @@
-FROM mogtofu33/alpine-base:3.7
+FROM mogtofu33/alpine-base:3.9
 
 LABEL maintainer="dev-drupal.com"
 
@@ -6,11 +6,11 @@ LABEL maintainer="dev-drupal.com"
 ENV LOCAL_UID=1000
 ENV LOCAL_GID=1000
 
-# We use a third party repo to get last 7.1 version.
+# We use a third party repo to get last 7.3 version.
 # https://github.com/codecasts/php-alpine#dockerfile
-# https://pkgs.alpinelinux.org/packages?name=php7*&branch=v3.7&arch=x86_64
+# https://pkgs.alpinelinux.org/packages?name=php7*&branch=v3.9&arch=x86_64
 ADD https://dl.bintray.com/php-alpine/key/php-alpine.rsa.pub /etc/apk/keys/php-alpine.rsa.pub
-RUN echo "@php https://php.codecasts.rocks/v3.7/php-7.1" >> /etc/apk/repositories && \
+RUN echo "@php https://php.codecasts.rocks/v3.9/php-7.3" >> /etc/apk/repositories && \
     apk add --update --no-cache \
     # Database clients and sync needed for Drush.
     mysql-client \
@@ -57,7 +57,6 @@ RUN echo "@php https://php.codecasts.rocks/v3.7/php-7.1" >> /etc/apk/repositorie
     php7-json@php \
     php7-ldap@php \
     php7-mbstring@php \
-    php7-mcrypt@php \
     php7-mysqli@php \
     php7-bcmath@php \
     php7-bz2@php \
@@ -80,17 +79,19 @@ RUN echo "@php https://php.codecasts.rocks/v3.7/php-7.1" >> /etc/apk/repositorie
     php7-litespeed@php \
     php7-phpdbg@php \
     php7-amqp@php \
-    php7-mailparse@php \
     php7-apcu@php \
     php7-memcached@php \
     php7-imagick@php \
-    php7-ssh2@php \
+    php7-psr@php \
     php7-xdebug@php \
     php7-redis@php \
     php7-zlib@php \
-    php7-libsodium@php \
+    php7-sodium@php \
+    php7-event \
+    php7-yaml \
     php7-oauth \
-    php7-zmq
+    php7-zmq \
+    php7-mcrypt
 
 # Install composer.
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
