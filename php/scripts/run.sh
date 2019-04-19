@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# Common commands for permissions fix.
-/scripts/fix_permissions.sh
-
 # Fix Php links if needed.
 if ! [ -f /usr/sbin/php-fpm ]; then
   ln -s /usr/sbin/php-fpm7 /usr/sbin/php-fpm
@@ -20,6 +17,9 @@ fi
 if ! [ -d /.composer ]; then
   ln -s /root/.composer/ /.composer
 fi
+
+# Common commands for permissions fix.
+/scripts/fix_permissions.sh
 
 echo "[i] Starting Php-fpm..."
 
