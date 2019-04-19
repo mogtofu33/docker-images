@@ -9,7 +9,7 @@ ENV LOCAL_GID=1000
 # We use a third party repo to get last 7.1 version.
 # https://github.com/codecasts/php-alpine#dockerfile
 # https://pkgs.alpinelinux.org/packages?name=php7*&branch=v3.7&arch=x86_64
-ADD https://php.codecasts.rocks/php-alpine.rsa.pub /etc/apk/keys/php-alpine.rsa.pub
+ADD https://dl.bintray.com/php-alpine/key/php-alpine.rsa.pub /etc/apk/keys/php-alpine.rsa.pub
 RUN echo "@php https://php.codecasts.rocks/v3.7/php-7.1" >> /etc/apk/repositories && \
     apk add --update --no-cache \
     # Database clients and sync needed for Drush.
