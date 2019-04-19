@@ -100,14 +100,14 @@ COPY ./scripts/run.sh /scripts/run.sh
 
 # Install prestissimo and php code sniffer with Drupal standards.
 RUN /usr/bin/composer global require "hirak/prestissimo:^0.3" "drupal/coder" \
-    && /composer/vendor/bin/phpcs --config-set installed_paths /composer/vendor/drupal/coder/coder_sniffer \
+    && ~/.composer/vendor/bin/phpcs --config-set installed_paths ~/.composer/vendor/drupal/coder/coder_sniffer \
     # Fix composer cache folder permission to run composer as apache user.
     && chmod +x /usr/bin/composer \
     && chmod +x /scripts/run.sh \
     # Copy root bashrc config for Apache user when running cmd.
     && cp /root/.bashrc /var/www/.bashrc \
     && chown apache:www-data /usr/bin/composer \
-    && chown -R apache:www-data /composer/cache /var/www \
+    && chown -R apache:www-data ~/.composer/cache /var/www \
     # Clean.
     && rm -rf ~/.composer/cache/* \
     && rm -rf /var/cache/apk/*
