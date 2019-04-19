@@ -86,7 +86,6 @@ RUN apk add --update --no-cache \
     php7-apcu \
     php7-memcached \
     php7-imagick \
-    php7-ssh2 \
     php7-xdebug \
     php7-redis \
     php7-pear-net_socket \

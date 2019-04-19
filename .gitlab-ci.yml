@@ -154,22 +154,6 @@ release:php:7.2:
   variables:
     IMAGE: php:7.2
 
-php7.3:
-  <<: *build_image
-  variables:
-    IMAGE: php:7.3
-    DIR: php/7.3
-
-test:php7.3:
-  <<: *test_images_php
-  variables:
-    IMAGE: php:7.3
-
-release:php:7.3:
-  <<: *release
-  variables:
-    IMAGE: php:7.3
-
 solr5:
   <<: *build_image
   variables:
