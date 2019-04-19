@@ -84,13 +84,15 @@ RUN apk add --update --no-cache \
     php7-pear-mail_mime \
     php7-zmq \
     php7-apcu \
-    php7-memcached \
     php7-imagick \
     php7-xdebug \
-    php7-redis \
     php7-pear-net_socket \
     php7-yaml \
-    php7-sodium
+    php7-sodium \
+    php7-pecl-memcached \
+    php7-pecl-redis \
+    php7-pecl-ssh2 \
+    php7-pecl-event
 
 # Install composer.
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
