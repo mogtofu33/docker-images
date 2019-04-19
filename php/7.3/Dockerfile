@@ -87,11 +87,7 @@ RUN echo "@php https://php.codecasts.rocks/v3.9/php-7.3" >> /etc/apk/repositorie
     php7-redis@php \
     php7-zlib@php \
     php7-sodium@php \
-    php7-event \
-    php7-yaml \
-    php7-oauth \
-    php7-zmq \
-    php7-mcrypt
+    php7-mcrypt@php
 
 # Install composer.
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer

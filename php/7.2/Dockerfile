@@ -100,7 +100,6 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 COPY ./scripts/run.sh /scripts/run.sh
 
 RUN ln -s /usr/sbin/php-fpm7 /usr/sbin/php-fpm \
-    && ln -s /usr/bin/php7 /usr/bin/php \
     # Symlink for cache.
     && ln -s /root/.composer/ /composer \
     && ln -s /root/.composer/ /.composer \
