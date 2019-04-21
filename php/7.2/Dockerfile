@@ -9,6 +9,10 @@ ENV LOCAL_GID=1000
 # Install Php extensions,Alpine package list to:
 #   https://pkgs.alpinelinux.org/packages?name=php7*&branch=v3.9&arch=x86_64
 RUN apk add --update --no-cache \
+    # Database clients and sync needed for Drush.
+    mysql-client \
+    postgresql-client \
+    # Php and third party.
     imagemagick \
     php7 \
     php7-common \
