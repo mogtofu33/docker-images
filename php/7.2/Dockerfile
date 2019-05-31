@@ -95,7 +95,6 @@ RUN apk add --update --no-cache \
     php7-sodium \
     php7-pecl-memcached \
     php7-pecl-redis \
-    php7-pecl-ssh2 \
     php7-pecl-event
 
 # Install composer.
