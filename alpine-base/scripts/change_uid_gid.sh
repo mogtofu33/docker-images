@@ -26,6 +26,7 @@ fi
 GROUPEXISTS=$(cat /etc/group | grep -e "${OLD_GROUP}:" | wc -l)
 if [ "$GROUPEXISTS" -ne 1 ]; then
   echo "[i] Group '$OLD_GROUP' not found in /etc/group"
+  OLD_GID=$OLD_GROUP
   exit 0
 else
   OLD_GID=`getent group $OLD_GROUP | cut -d: -f3`
@@ -39,9 +40,11 @@ else
   # Set new uid.
   if [ "$OLD_UID" != "$NEW_UID" ]; then
     usermod -u ${NEW_UID} ${OLD_USER}
+    My our new uid for group change.
+    OLD_USER=$NEW_UID
     echo "[i] User updated $OLD_UID > $NEW_UID"
   else
-    echo "[i] User uid match."
+    echo "[i] User uid already match."
   fi
 fi
 
@@ -57,7 +60,7 @@ else
   else
     # Still force user group change.
     usermod -g ${NEW_GID} ${OLD_USER} 2>/dev/null
-    echo "[i] Group gid match."
+    echo "[i] Group gid already match."
   fi
 fi
 
