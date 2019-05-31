@@ -3,7 +3,7 @@
 define base_build
 	# Build base image $(1)
 	@mkdir -p ./alpine-base/$(1);
-	@TIMEZONE="Pacific/Auckland" ALPINE_VERSION="$(1)" envsubst < "./alpine-base/Dockerfile.tpl" > "./alpine-base/$(1)/Dockerfile";
+	@TIMEZONE="Europe/Paris" ALPINE_VERSION="$(1)" envsubst < "./alpine-base/Dockerfile.tpl" > "./alpine-base/$(1)/Dockerfile";
 	@cp -r ./alpine-base/config/ ./alpine-base/$(1)/;
 	@cp -r ./alpine-base/scripts/ ./alpine-base/$(1)/;
 	# Done!

@@ -2,19 +2,19 @@
 
 [![pipeline status](https://gitlab.com/mog33/docker-images/badges/master/pipeline.svg)](https://gitlab.com/mog33/docker-images/commits/master)
 
-Alpine base 
+Alpine base
 [![Docker Build Status](https://img.shields.io/docker/build/mogtofu33/alpine-base.svg)](https://hub.docker.com/r/mogtofu33/alpine-base/)
 [![Image size](https://images.microbadger.com/badges/image/mogtofu33/alpine-base.svg)](https://microbadger.com/images/mogtofu33/alpine-base)
 
-Php 
+Php
 [![Docker Build Status](https://img.shields.io/docker/build/mogtofu33/php.svg)](https://hub.docker.com/r/mogtofu33/php/)
 [![Image size](https://images.microbadger.com/badges/image/mogtofu33/php.svg)](https://microbadger.com/images/mogtofu33/php)
 
-Apache 
+Apache
 [![Docker Build Status](https://img.shields.io/docker/build/mogtofu33/apache.svg)](https://hub.docker.com/r/mogtofu33/apache/)
 [![Image size](https://images.microbadger.com/badges/image/mogtofu33/apache.svg)](https://microbadger.com/images/mogtofu33/apache)
 
-Solr 
+Solr
 [![Docker Build Status](https://img.shields.io/docker/build/mogtofu33/solr.svg)](https://hub.docker.com/r/mogtofu33/solr/)
 [![Image size](https://images.microbadger.com/badges/image/mogtofu33/solr.svg)](https://microbadger.com/images/mogtofu33/solr)
 
