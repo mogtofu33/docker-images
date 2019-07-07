@@ -9,6 +9,8 @@ ENV LOCAL_GID=1000
 # Install Php extensions,Alpine package list to:
 #   https://pkgs.alpinelinux.org/packages?name=php7*&branch=v3.9&arch=x86_64
 RUN apk add --update --no-cache \
+    # Patch for composer patch plugin, the one included in busybox does not support the '-f' parameter and fails
+    patch \
     # Database clients and sync needed for Drush.
     mysql-client \
     postgresql-client \
