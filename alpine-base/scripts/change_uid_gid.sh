@@ -40,7 +40,7 @@ else
   # Set new uid.
   if [ "$OLD_UID" != "$NEW_UID" ]; then
     usermod -u ${NEW_UID} ${OLD_USER}
-    My our new uid for group change.
+    # our new uid for group change.
     OLD_USER=$NEW_UID
     echo "[i] User updated $OLD_UID > $NEW_UID"
   else
