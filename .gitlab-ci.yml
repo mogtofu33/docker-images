@@ -122,6 +122,25 @@ release:base:3.9:
   variables:
     IMAGE: alpine-base:3.9
 
+base:3.10:
+  <<: *build_push
+  variables:
+    IMAGE: alpine-base:3.10
+    DIR: alpine-base/3.10
+
+test:3.10:
+  <<: *test_base
+  variables:
+    IMAGE: alpine-base:3.10
+
+release:base:3.10:
+  <<: *release
+  stage: release base
+  only:
+    - branches
+  variables:
+    IMAGE: alpine-base:3.10
+
 apache:
   <<: *build_image
   variables:
@@ -153,6 +172,22 @@ release:php:7.2:
   <<: *release
   variables:
     IMAGE: php:7.2
+
+php7.3:
+  <<: *build_image
+  variables:
+    IMAGE: php:7.3
+    DIR: php/7.3
+
+test:php7.3:
+  <<: *test_images_php
+  variables:
+    IMAGE: php:7.3
+
+release:php:7.3:
+  <<: *release
+  variables:
+    IMAGE: php:7.3
 
 solr5:
   <<: *build_image
