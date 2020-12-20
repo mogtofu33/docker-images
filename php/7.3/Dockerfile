@@ -86,13 +86,11 @@ RUN apk add --update --no-cache \
     php7-amqp \
     php7-mailparse \
     php7-oauth \
-    php7-pear-mail_mime \
     php7-zmq \
     php7-pecl-mcrypt \
     php7-pecl-apcu \
     php7-pecl-imagick \
     php7-pecl-xdebug \
-    php7-pear-net_socket \
     php7-pecl-yaml \
     php7-sodium \
     php7-pecl-memcached \
@@ -100,8 +98,7 @@ RUN apk add --update --no-cache \
     php7-pecl-event \
     php7-pecl-lzf \
     php7-pecl-timezonedb \
-    php7-pecl-ast \
-    php7-pecl-vips
+    php7-pecl-ast
 
 # Install composer.
 COPY --from=composer:1 /usr/bin/composer /usr/bin/composer
