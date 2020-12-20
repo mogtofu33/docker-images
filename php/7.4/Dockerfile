@@ -6,13 +6,9 @@ LABEL maintainer="dev-drupal.com"
 ENV LOCAL_UID=1000
 ENV LOCAL_GID=1000
 
-ADD https://dl.bintray.com/php-alpine/key/php-alpine.rsa.pub /etc/apk/keys/php-alpine.rsa.pub
-
-RUN echo "https://dl.bintray.com/php-alpine/v3.12/php-7.4" >> /etc/apk/repositories
-
 # Install Php extensions,Alpine package list to:
 #   https://pkgs.alpinelinux.org/packages?name=php7*&branch=v3.12&arch=x86_64
-RUN apk add --update --no-cache \
+RUN apk add --update --no-cache --repository=http://dl-cdn.alpinelinux.org/alpine/edge/main \
     # Patch for composer patch plugin, the one included in busybox does not support the '-f' parameter and fails
     patch \
     # Database clients and sync needed for Drush.
