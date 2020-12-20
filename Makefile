@@ -57,58 +57,49 @@ define docker_clean
 endef
 
 base_build:
-	$(call base_build,3.9)
-	$(call base_build,3.10)
+	$(call base_build,3.12)
 
 php_build:
-	$(call php_build,7.2, base_3_9)
-	$(call php_build,7.3, base_3_10)
+	$(call php_build,7.3, base_3_12)
+	$(call php_build,7.4, base_3_12)
 
 solr_build:
-	$(call solr_build,5)
-	$(call solr_build,6)
 	$(call solr_build,7)
+	$(call solr_build,8)
 
 build: base_build php_build solr_build
 
 test: clean-containers test_base test_php test_solr
 
-test_base_3_9: base_build
-	$(call docker_build,base_3_9,./alpine-base/3.9)
+test_base_3_12: base_build
+	$(call docker_build,base_3_12,./alpine-base/3.12)
 
-test_base_3_10: base_build
-	$(call docker_build,base_3_10,./alpine-base/3.10)
+test_base: base_build test_base_3_12
 
-test_base: base_build test_base_3_9 test_base_3_10
-
-test_php_7_2:
-	$(call set_from_test,./php/7.2,base_3_9)
-	$(call docker_build_run,test_php_7_2,./php/7.2,php -v)
-	$(call revert_set_from_test,./php/7.2)
 test_php_7_3:
 	$(call set_from_test,./php/7.3,base_3_10)
 	$(call docker_build_run,test_php_7_3,./php/7.3,php -v)
 	$(call revert_set_from_test,./php/7.3)
+test_php_7_4:
+	$(call set_from_test,./php/7.4,base_3_12)
+	$(call docker_build_run,test_php_7_4,./php/7.4,php -v)
+	$(call revert_set_from_test,./php/7.4)
 
-test_php: php_build test_php_7_2 test_php_7_3
-
-test_solr_5: solr_build
-	$(call docker_build_run,test_solr_5,./solr/5,wget -q -O - "http://localhost:8983/solr/d8/admin/ping?wt=json")
-
-test_solr_6: solr_build
-	$(call docker_build_run,test_solr_6,./solr/6,wget -q -O - "http://localhost:8983/solr/d8/admin/ping?wt=json")
+test_php: php_build test_php_7_3 test_php_7_4
 
 test_solr_7: solr_build
 	$(call docker_build_run,test_solr_7,./solr/7,wget -q -O - "http://localhost:8983/solr/d8/admin/ping?wt=json")
 
-test_solr: solr_build test_solr_5 test_solr_6 test_solr_7
+test_solr_8: solr_build
+	$(call docker_build_run,test_solr_8,./solr/8,wget -q -O - "http://localhost:8983/solr/d8/admin/ping?wt=json")
+
+test_solr: solr_build test_solr_7 test_solr_8
 
 clean: clean-files clean-containers
 
 clean-files:
 	# clean base images.
-	@rm -rf ./alpine-base/3.9;
-	@rm -rf ./alpine-base/3.10;
+	@rm -rf ./alpine-base/3.12;
 	# clean php images.
 	@rm -rf ./php/*/scripts;
 	# clean solr images.
@@ -118,23 +109,19 @@ clean-files:
 
 clean-containers:
 	# clean base.
-	$(call docker_clean,base_3_9)
-	$(call docker_clean,base_3_10)
+	$(call docker_clean,base_3_12)
 	# clean php.
-	$(call docker_clean,test_php_7_2)
 	$(call docker_clean,test_php_7_3)
+	$(call docker_clean,test_php_7_4)
 	# clean solr.
-	$(call docker_clean,test_solr_5)
-	$(call docker_clean,test_solr_6)
 	$(call docker_clean,test_solr_7)
+	$(call docker_clean,test_solr_8)
 
 clean-images:
-	-docker rmi base_3_9;
-	-docker rmi base_3_10;
-	-docker rmi test_php_7_2;
+	-docker rmi base_3_12;
 	-docker rmi test_php_7_3;
-	-docker rmi test_solr_5;
-	-docker rmi test_solr_6;
+	-docker rmi test_php_7_4;
 	-docker rmi test_solr_7;
+	-docker rmi test_solr_8;
 
 .PHONY: build test clean

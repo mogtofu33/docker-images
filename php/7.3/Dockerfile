@@ -1,4 +1,4 @@
-FROM mogtofu33/alpine-base:3.10
+FROM mogtofu33/alpine-base:3.12
 
 LABEL maintainer="dev-drupal.com"
 
@@ -7,7 +7,7 @@ ENV LOCAL_UID=1000
 ENV LOCAL_GID=1000
 
 # Install Php extensions,Alpine package list to:
-#   https://pkgs.alpinelinux.org/packages?name=php7*&branch=v3.10&arch=x86_64
+#   https://pkgs.alpinelinux.org/packages?name=php7*&branch=v3.12&arch=x86_64
 RUN apk add --update --no-cache \
     # Patch for composer patch plugin, the one included in busybox does not support the '-f' parameter and fails
     patch \
@@ -101,11 +101,10 @@ RUN apk add --update --no-cache \
     php7-pecl-lzf \
     php7-pecl-timezonedb \
     php7-pecl-ast \
-    php7-pecl-vips \
-    php7-pecl-protobuf
+    php7-pecl-vips
 
 # Install composer.
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+COPY --from=composer:1 /usr/bin/composer /usr/bin/composer
 
 # Copy Php fpm start script.
 COPY ./scripts/run.sh /scripts/run.sh
