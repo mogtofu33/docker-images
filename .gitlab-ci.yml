@@ -185,19 +185,3 @@ release:solr7:
   <<: *release
   variables:
     IMAGE: solr:7
-
-solr8:
-  <<: *build_image
-  variables:
-    IMAGE: solr:8
-    DIR: solr/8
-
-test:solr8:
-  <<: *test_solr
-  variables:
-    IMAGE: solr:8
-
-release:solr8:
-  <<: *release
-  variables:
-    IMAGE: solr:8

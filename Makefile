@@ -65,7 +65,6 @@ php_build:
 
 solr_build:
 	$(call solr_build,7)
-	$(call solr_build,8)
 
 build: base_build php_build solr_build
 
@@ -90,10 +89,7 @@ test_php: php_build test_php_7_3 test_php_7_4
 test_solr_7: solr_build
 	$(call docker_build_run,test_solr_7,./solr/7,wget -q -O - "http://localhost:8983/solr/d8/admin/ping?wt=json")
 
-test_solr_8: solr_build
-	$(call docker_build_run,test_solr_8,./solr/8,wget -q -O - "http://localhost:8983/solr/d8/admin/ping?wt=json")
-
-test_solr: solr_build test_solr_7 test_solr_8
+test_solr: solr_build test_solr_7
 
 clean: clean-files clean-containers
 
@@ -115,13 +111,11 @@ clean-containers:
 	$(call docker_clean,test_php_7_4)
 	# clean solr.
 	$(call docker_clean,test_solr_7)
-	$(call docker_clean,test_solr_8)
 
 clean-images:
 	-docker rmi base_3_12;
 	-docker rmi test_php_7_3;
 	-docker rmi test_php_7_4;
 	-docker rmi test_solr_7;
-	-docker rmi test_solr_8;
 
 .PHONY: build test clean
