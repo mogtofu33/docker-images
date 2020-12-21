@@ -29,7 +29,9 @@ RUN apk add --update --no-cache --repository=http://dl-cdn.alpinelinux.org/alpin
     php7-xmlwriter \
     php7-xsl \
     php7-zip \
+    php7-phar \
     php7-posix \
+    php7-pspell \
     php7-recode \
     php7-session \
     php7-shmop \
@@ -64,25 +66,39 @@ RUN apk add --update --no-cache --repository=http://dl-cdn.alpinelinux.org/alpin
     php7-mysqli \
     php7-bcmath \
     php7-bz2 \
+    php7-calendar \
     php7-ctype \
     php7-curl \
     php7-dba \
     php7-dom \
+    php7-enchant \
     php7-exif \
     php7-fileinfo \
     php7-pear \
     php7-apache2 \
     php7-cgi \
+    php7-dev \
+    php7-doc \
+    php7-embed \
     php7-fpm \
+    php7-litespeed \
+    php7-phpdbg \
+    php7-amqp \
     php7-mailparse \
     php7-oauth \
     php7-zmq \
     php7-pecl-mcrypt \
     php7-pecl-apcu \
+    php7-pecl-imagick \
     php7-pecl-xdebug \
     php7-pecl-yaml \
+    php7-sodium \
     php7-pecl-memcached \
-    php7-pecl-redis
+    php7-pecl-redis \
+    php7-pecl-event \
+    php7-pecl-lzf \
+    php7-pecl-timezonedb \
+    php7-pecl-ast
 
 # Install composer.
 COPY --from=composer:1 /usr/bin/composer /usr/bin/composer
