@@ -1,4 +1,4 @@
-FROM mogtofu33/alpine-base:3.9
+FROM mogtofu33/alpine-base:3.13
 
 LABEL maintainer="dev-drupal.com"
 
@@ -22,22 +22,19 @@ RUN apk add --update --no-cache \
     apache2-proxy-html \
     apache2-ssl \
     apache2-ctl \
-    apache2-doc \
     apache-mod-fcgid \
     libxml2-dev
 
 COPY ./scripts/run.sh /scripts/run.sh
 
 # Fix proxy error by disabling config.
-RUN mv /etc/apache2/conf.d/proxy.conf /etc/apache2/conf.d/proxy.conf.dis \
+RUN mv /etc/apache2/conf.d/proxy.conf /etc/apache2/conf.d/proxy.conf.dis && \
   # Copy root bashrc config for Apache user when running cmd.
-  &&  cp /root/.bashrc /var/www/.bashrc \
+  cp /root/.bashrc /var/www/.bashrc && \
   # Fix web root permission, set php and apache logs.
-  && chown -R apache:www-data /var/www \
+  chown -R apache:www-data /var/www && \
   # Set Apache script.
-  && chmod +x /scripts/run.sh \
-  # Clean.
-  && rm -rf /var/cache/apk/*
+  chmod +x /scripts/run.sh
 
 EXPOSE 80
 EXPOSE 443

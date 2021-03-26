@@ -1,11 +1,11 @@
-FROM alpine:$ALPINE_VERSION
+FROM alpine:3.13
 
 LABEL maintainer="dev-drupal.com"
 
-# Configurable settings.
-ENV TIMEZONE        $TIMEZONE
+ARG TZ='Europe/Paris'
 
 # System settings
+ENV DEFAULT_TZ      ${TZ}
 ENV LANG            en_US.UTF-8
 ENV LC_ALL          en_US.UTF-8
 ENV TERM            xterm
@@ -16,21 +16,20 @@ RUN apk update && \
 
 # With minimal apps.
 RUN apk add --update --no-cache \
-    git \
     bash \
-    shadow \
+    ca-certificates \
     curl \
-    wget \
+    git \
     lynx \
-    tzdata \
-    rsync \
     openssh \
     openssl \
-    ca-certificates
-
-# Set timezone.
-RUN cp /usr/share/zoneinfo/$TIMEZONE /etc/localtime && \
-    echo "$TIMEZONE" > /etc/timezone
+    rsync \
+    shadow \
+    wget \
+    tzdata \
+    && cp /usr/share/zoneinfo/${DEFAULT_TZ} /etc/localtime \
+    && apk del tzdata \
+    && rm -rf /var/cache/apk/*
 
 # Copy config.
 COPY config/bashrc /root/.bashrc
@@ -38,10 +37,6 @@ COPY config/bashrc /root/.bashrc
 # Usefull bash alias for docker exec.
 RUN ln -s /bin/bash /bash && \
     ln -s /bin/sh /sh
-
-# Cleanup.
-RUN apk del tzdata && \
-    rm -rf /var/cache/apk/*
 
 # Prepare folders and set our scripts.
 RUN mkdir /scripts && \

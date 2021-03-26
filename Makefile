@@ -1,14 +1,5 @@
 # Makefile for Docker Compose Drupal images.
 
-define base_build
-	# Build base image $(1)
-	@mkdir -p ./alpine-base/$(1);
-	@TIMEZONE="Europe/Paris" ALPINE_VERSION="$(1)" envsubst < "./alpine-base/Dockerfile.tpl" > "./alpine-base/$(1)/Dockerfile";
-	@cp -r ./alpine-base/config/ ./alpine-base/$(1)/;
-	@cp -r ./alpine-base/scripts/ ./alpine-base/$(1)/;
-	# Done!
-endef
-
 define php_build
 	# Build php $(1)
 	@cp -r ./php/scripts/ ./php/$(1)/;
@@ -56,46 +47,48 @@ define docker_clean
 	-docker rm $(1);
 endef
 
-base_build:
-	$(call base_build,3.12)
+php_build_7:
+	$(call php_build,7.4)
 
-php_build:
-	$(call php_build,7.3, base_3_12)
-	$(call php_build,7.4, base_3_12)
+php_build_8:
+	$(call php_build,8.0)
 
 solr_build:
 	$(call solr_build,7)
 
-build: base_build php_build solr_build
+build: php_build_7 php_build_8 solr_build
 
-test: clean-containers test_base test_php test_solr
+test_base:
+	$(call docker_build_run,test_base,./alpine-base,bash --version)
 
-test_base_3_12: base_build
-	$(call docker_build,base_3_12,./alpine-base/3.12)
-
-test_base: base_build test_base_3_12
-
-test_php_7_3:
-	$(call set_from_test,./php/7.3,base_3_10)
-	$(call docker_build_run,test_php_7_3,./php/7.3,php -v)
-	$(call revert_set_from_test,./php/7.3)
-test_php_7_4:
-	$(call set_from_test,./php/7.4,base_3_12)
+test_php_7:
+	$(call docker_build,test_base,alpine-base)
+	$(call set_from_test,./php/7.4,test_base)
 	$(call docker_build_run,test_php_7_4,./php/7.4,php -v)
 	$(call revert_set_from_test,./php/7.4)
 
-test_php: php_build test_php_7_3 test_php_7_4
+test_php_8:
+	$(call docker_build,test_base,alpine-base)
+	$(call set_from_test,./php/8.0,test_base)
+	$(call docker_build_run,test_php_8,./php/8.0,php -v)
+	$(call revert_set_from_test,./php/8.0)
+
+test_php: php_build_7 php_build_8 test_php_7 test_php_8
 
 test_solr_7: solr_build
 	$(call docker_build_run,test_solr_7,./solr/7,wget -q -O - "http://localhost:8983/solr/d8/admin/ping?wt=json")
 
 test_solr: solr_build test_solr_7
 
-clean: clean-files clean-containers
+test_apache:
+	$(call docker_build,test_base,alpine-base)
+	$(call set_from_test,./apache,test_base)
+	$(call docker_build_run,test_apache,./apache,httpd -t -D DUMP_RUN_CFG)
+	$(call revert_set_from_test,apache)
+
+test: clean-containers test_base test_apache test_solr test_php test_solr
 
 clean-files:
-	# clean base images.
-	@rm -rf ./alpine-base/3.12;
 	# clean php images.
 	@rm -rf ./php/*/scripts;
 	# clean solr images.
@@ -105,17 +98,20 @@ clean-files:
 
 clean-containers:
 	# clean base.
-	$(call docker_clean,base_3_12)
+	$(call docker_clean,test_base)
 	# clean php.
-	$(call docker_clean,test_php_7_3)
-	$(call docker_clean,test_php_7_4)
+	$(call docker_clean,test_php_7)
+	$(call docker_clean,test_php_8)
 	# clean solr.
 	$(call docker_clean,test_solr_7)
 
 clean-images:
-	-docker rmi base_3_12;
-	-docker rmi test_php_7_3;
-	-docker rmi test_php_7_4;
+	-docker rmi test_base;
+	-docker rmi test_php_7;
+	-docker rmi test_php_8;
 	-docker rmi test_solr_7;
+
+clean: clean-files clean-containers
+	# Run clean-images to remove images.
 
 .PHONY: build test clean

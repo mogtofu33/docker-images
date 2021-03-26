@@ -32,7 +32,9 @@ variables:
 .docker_build_push:
   script: &docker_build_push
     - *docker_pull
-    - docker build --compress --cache-from $RELEASE_IMAGE/$IMAGE --tag $CI_REGISTRY_IMAGE/$IMAGE $DIR
+    - docker build --compress --cache-from $RELEASE_IMAGE/$IMAGE
+      --build-arg BUILDKIT_INLINE_CACHE=1
+      --tag $CI_REGISTRY_IMAGE/$IMAGE $DIR
     - docker push $CI_REGISTRY_IMAGE/$IMAGE
 
 .build_push: &build_push
@@ -103,24 +105,24 @@ before_script:
   - *docker_login_gitlab
   - *make_build
 
-base:3.12:
+base:3.13:
   <<: *build_push
   variables:
-    IMAGE: alpine-base:3.12
-    DIR: alpine-base/3.12
+    IMAGE: alpine-base:3.13
+    DIR: alpine-base
 
-test:3.12:
+test:3.13:
   <<: *test_base
   variables:
-    IMAGE: alpine-base:3.12
+    IMAGE: alpine-base:3.13
 
-release:base:3.12:
+release:base:3.13:
   <<: *release
   stage: release base
   only:
     - branches
   variables:
-    IMAGE: alpine-base:3.12
+    IMAGE: alpine-base:3.13
 
 apache:
   <<: *build_image
@@ -138,22 +140,6 @@ release:apache:
   variables:
     IMAGE: apache:latest
 
-php7.3:
-  <<: *build_image
-  variables:
-    IMAGE: php:7.3
-    DIR: php/7.3
-
-test:php7.3:
-  <<: *test_images_php
-  variables:
-    IMAGE: php:7.3
-
-release:php:7.3:
-  <<: *release
-  variables:
-    IMAGE: php:7.3
-
 php7.4:
   <<: *build_image
   variables:
@@ -169,6 +155,22 @@ release:php:7.4:
   <<: *release
   variables:
     IMAGE: php:7.4
+
+php8.0:
+  <<: *build_image
+  variables:
+    IMAGE: php:8.0
+    DIR: php/8.0
+
+test:php8.0:
+  <<: *test_images_php
+  variables:
+    IMAGE: php:8.0
+
+release:php:8.0:
+  <<: *release
+  variables:
+    IMAGE: php:8.0
 
 solr7:
   <<: *build_image
