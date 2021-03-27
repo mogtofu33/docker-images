@@ -89,7 +89,8 @@ RUN apk add --update --no-cache --repository=http://dl-cdn.alpinelinux.org/alpin
     php7-pecl-redis \
     php7-pecl-timezonedb \
     php7-pecl-xdebug \
-    php7-pecl-yaml
+    php7-pecl-yaml && \
+    ln -s /etc/php7/ /etc/php/
 
 # Install composer.
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer

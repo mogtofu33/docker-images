@@ -94,7 +94,8 @@ RUN apk add --update --no-cache --repository=http://dl-cdn.alpinelinux.org/alpin
     ln -s /usr/bin/php8 /usr/bin/php && \
     ln -s /usr/bin/phpize8 /usr/bin/phpize && \
     ln -s /usr/bin/phpdbg8 /usr/bin/phpdbg && \
-    ln -s /usr/sbin/php-fpm8 /usr/sbin/php-fpm
+    ln -s /usr/sbin/php-fpm8 /usr/sbin/php-fpm && \
+    ln -s /etc/php8/ /etc/php/
 
 # Install composer.
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
